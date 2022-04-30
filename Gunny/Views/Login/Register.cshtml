@@ -1,0 +1,62 @@
+﻿@model Gunny.Models.InformationMemAccount.UserRegister
+
+@{
+    ViewData["Title"] = "Đăng ký tài khoản";
+    Layout = "~/Views/Shared/_Login.cshtml";
+}
+
+<link href="~/css/Login.css" rel="stylesheet" />
+<p class="tip"></p>
+@using (Html.BeginForm("PostRegister", "Login", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @if (@TempData["AlerMessageError"] != null)
+    {
+        <div class="alert alert-danger" role="alert" style="display: flex; justify-content: center; width: 100%; }">
+            @TempData["AlerMessageError"]
+        </div>
+    }
+    @if (@TempData["SucessMessageAccount"] != null)
+    {
+        <div class="alert alert-success" role="alert" style="display: flex; justify-content: center; width: 100%; }">
+            @TempData["SucessMessageAccount"]
+        </div>
+    }
+    <div class="cont">
+
+        <div class="form sign-in" style="margin-top:-30px;">
+            <h2>Đăng ký Gunny Investment chỉ với Email </h2>
+            <label>
+                <span>Tài khoản đăng nhập</span>
+                @Html.TextBoxFor(m => m.UserName, "", new { @class = "form-control", @placeholder = "" })
+            </label>
+            <label>
+                <span>Mật khẩu</span>
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "" })
+            </label>
+            <label>
+                <span>Nhập lại mật khẩu 1</span>
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "" })
+            </label>
+            <label>
+                <span>Nhập lại mật khẩu 2</span>
+                @Html.PasswordFor(m => m.Password2, new { @class = "form-control", @placeholder = "" })
+            </label>
+            <button type="submit" class="submit">Đăng ký</button>
+            <div>
+                <a href="/dang-nhap" style=" display: flex; justify-content: center;">Quay lại</a>
+            </div>
+        </div>
+
+        <div class="sub-cont">
+            <div class="img">
+                <div class="img__text m--up">
+                    <h2>Nhiều sự kện mới!</h2>
+                    <p>Đăng nhập để quản lí khoản chơi game!</p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+}
