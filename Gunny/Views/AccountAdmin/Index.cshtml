@@ -1,13 +1,27 @@
-﻿
+﻿@model Gunny.Models.InformationMemAccount.User
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Thông tin cá nhân";
     Layout = "~/Views/Shared/_AccountAdmin.cshtml";
 }
 
-<div class="title">
-    <h1>Cẩm Nang Tân Thủ</h1>
-</div>
+<h1>Thông tin cá nhân</h1>
 <hr />
+<div class="row account">
+    <div class="col-md-5">Tên đăng nhập</div>
+    <div class="col-md-7">@Model.Email</div>
+</div>
+<div class="row account">
+    <div class="col-md-5">Email</div>
+    <div class="col-md-7">@Model.MemEmail</div>
+</div>
+<div class="row account">
+    <div class="col-md-5">Họ và tên</div>
+    <div class="col-md-7">@Model.Fullname</div>
+</div>
+<div class="row account">
+    <div class="col-md-5">Số điện thoại</div>
+    <div class="col-md-7">@Model.Phone</div>
+</div>
 
 
 

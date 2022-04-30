@@ -3,6 +3,8 @@
     ViewData["Title"] = "Đổi mật khẩu";
     Layout = "~/Views/Shared/_AccountAdmin.cshtml";
 }
+<h1>Đổi mật khẩu với mật khẩu cũ</h1>
+<hr />
 @using (Html.BeginForm("Change", "ChangePassword", FormMethod.Post))
 {
     @Html.AntiForgeryToken()

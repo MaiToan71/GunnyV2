@@ -386,7 +386,7 @@ div {
 }
 h1, a, .gunny-text {
     font-size: 16px;
-    text-align: center;
+    text-align: left;
     color: #555 !important;
     font-weight: bold;
     text-shadow: 0.5px 0.866px 0px rgb(251 215 22 / 69%);
@@ -394,4 +394,8 @@ h1, a, .gunny-text {
 
 .w-80{
     width:80% !important;
+}
+
+.account{
+    color:black !important;
 }

@@ -107,7 +107,7 @@ namespace Gunny.Controllers
                     string userid = data.UserId.ToString();
                     SetCookie("gunny_userid", userid, 9999999);
                     SetCookie("gunny_username", data.Email, 9999999);
-                    return Redirect("/thong-tin-tai-khoan");
+                    return Redirect("/ca-nhan");
                 }
                 else
                 {

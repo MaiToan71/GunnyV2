@@ -19,6 +19,7 @@
         </div>
     }
     <h1>Thông tin gửi email xác nhập nạp thẻ</h1>
+    <hr />
     <div class="row">
         <div class="col-md-3 gunny-text">
             Tài khoản
@@ -43,16 +44,22 @@
         <div class="col-md-6">
             @Html.TextAreaFor(m => m.Note, new { @rows = 8, @class = "form-control", @placeholder = "Nhập nội dung thông tin tài khoản của bạn để admin biết" })
         </div>
+        <div class="col-md-3">
+            <p>Cú pháp:</p>
+            <p>Tên chủ thẻ, stk ngân hàng, tên ngân hàng</p>
+            <p>vd: Nguyen Van A, 01397856, TPBANK</p>
+        </div>
     </div>
     <div class="d-flex justify-content-center " style="margin-top:10px; margin-bottom:10px">
         <button type="submit" class="btn btn-primary  ">Gửi thông tin</button>
     </div>
     <div style="color:red">
-        * Sau khi nạp thành công vui lòng vào lịch sử nạp thẻ để xem code và nhập code tương ứng trong game để nhận xu cùng vật phẩm code.
+        Vui lòng liên hệ fanpage để được hỗ trợ duyệt lệnh nhanh!
     </div>
 
-    <div>
-        <p>STK Admin: </p>
-        <p>Tên ngân hàng: </p>
+    <div style="color:black">
+        <p> Số Tài Khoản : 1903 297 161 0018</p>
+        <p> Tên Ngân Hàng : Techcombank</p>
+        <p> Chủ Tài Khoản : Hồ Anh Tuấn</p>
     </div>
 }
