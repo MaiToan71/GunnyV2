@@ -42,7 +42,15 @@ namespace Gunny.Models
         public virtual DbSet<UserAdmin> UserAdmins { get; set; }
         public virtual DbSet<WsItemDuaTop> WsItemDuaTops { get; set; }
 
-     
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=LAPTOP-DO63GVQ8\\SQLEXPRESS;Database=Member_GMP;Trusted_Connection=True;");
+            }
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
@@ -222,7 +230,11 @@ namespace Gunny.Models
                     .HasMaxLength(100)
                     .HasColumnName("IPCreate");
 
+                entity.Property(e => e.MemEmail).HasMaxLength(50);
+
                 entity.Property(e => e.Password).HasMaxLength(500);
+
+                entity.Property(e => e.Password2).HasMaxLength(500);
 
                 entity.Property(e => e.Phone).HasMaxLength(100);
 
@@ -461,14 +473,12 @@ namespace Gunny.Models
 
             modelBuilder.Entity<UserAdmin>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("user_admin");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Password)
-                    .HasColumnType("text")
+                    .HasMaxLength(50)
                     .HasColumnName("password");
 
                 entity.Property(e => e.Type).HasColumnName("type");

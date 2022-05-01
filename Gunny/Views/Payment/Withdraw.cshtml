@@ -4,7 +4,33 @@
     Layout = "~/Views/Shared/_AccountAdmin.cshtml";
 }
 <h1>Thông tin gửi email xác nhận rút tiền</h1>
-<hr />
+<table class="table table-bordered " style="margin-top:20px;">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Rút xu</th>
+            <th scope="col">Số tiền</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th scope="row">1</th>
+            <td>10 xu</td>
+            <td>10,000 vnđ</td>
+        </tr>
+        <tr>
+            <th scope="row">2</th>
+            <td>100 xu</td>
+            <td> 100,000 vnđ</td>
+        </tr>
+        <tr>
+            <th scope="row">3</th>
+            <td> 1000 xu</td>
+            <td>1,000,000 vnđ</td>
+        </tr>
+    </tbody>
+</table>
 @using (Html.BeginForm("PostWithdraw", "Payment", FormMethod.Post, new { @enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
@@ -34,9 +60,9 @@
             Số tiền rút
         </div>
         <div class="col-md-6">
-            @Html.TextBoxFor(m => m.NumberOfMoney, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.NumberOfMoney, new { @class = "form-control", @placeholder = "100 000 vnđ" })
         </div>
-        <div class="col-md-3" style="color:black">Ví dụ: 200 000VNĐ</div>
+        <div class="col-md-3" style="color:red">Tối thiểu: 10xu </div>
     </div>
 
     <div class="row">
@@ -44,12 +70,10 @@
             Nội dung ghi chú
         </div>
         <div class="col-md-6">
-            @Html.TextAreaFor(m => m.Note, new { @rows = 8, @class = "form-control", @placeholder = "Nhập nội dung thông tin tài khoản của bạn để admin biết" })
+            @Html.TextAreaFor(m => m.Note, new { @rows = 8, @class = "form-control", @placeholder = "Nội dung chuyển khoản ghi rõ tên đăng nhập, số tiền rút" })
         </div>
-        <div class="col-md-3">
-            <p>Cú pháp:</p>
-            <p>Tên chủ thẻ, stk ngân hàng, tên ngân hàng</p>
-            <p>vd: Nguyen Van A, 01397856, TPBANK</p>
+        <div class="col-md-3" style="color:red">
+            Rút xu sẽ bị trừ 10% phí giao dịch
         </div>
     </div>
     <div class="d-flex justify-content-center " style="margin-top:10px; margin-bottom:10px">

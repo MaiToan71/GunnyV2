@@ -93,42 +93,54 @@ namespace Gunny.Controllers
             string cookieValueFromReq = Request.Cookies["gunny_userid"];
             int userid = Int32.Parse(cookieValueFromReq);
             var user = _context.MemAccounts.Find(userid);
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-            MailContent content = new MailContent
+            if (payment.NumberOfMoney == null || payment.Note == null )
             {
-                To = config["MailSettingsAdmin:Mail"],
-                Subject = "Thông tin nạp thẻ tài khoản : " + user.Email,
-                Body =$@" <p>Email/Tài khoản: {user.Email}</p>
+                TempData["AlerMessageError"] = "Không được để trống thông tin gửi";
+                return Redirect("/nap-the");
+            }
+            if(user.Email == null)
+            {
+                TempData["AlerMessageError"] = "Bạn chưa xác minh email";
+                return Redirect("/nap-the");
+            }
+           
+                var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+                MailContent content = new MailContent
+                {
+                    To = config["MailSettingsAdmin:Mail"],
+                    Subject = "Thông tin nạp thẻ tài khoản : " + user.Email,
+                    Body = $@" <p>Email/Tài khoản: {user.Email}</p>
                             <p>Số tiền cần nạp: {payment.NumberOfMoney}</p>
                             <p>Thông tin ghi chú: {payment.Note} </p>"
-            };
-            _ = SendMail(content);
-            var time = DateTimeOffset.Now.ToUnixTimeSeconds();
-            var hostName = System.Net.Dns.GetHostName();
-            var ips = await System.Net.Dns.GetHostAddressesAsync(hostName);
-            var count = 0;
-            string ipx = "";
-            foreach (var ip in ips)
-            {
-                if (count == 1)
+                };
+                _ = SendMail(content);
+                var time = DateTimeOffset.Now.ToUnixTimeSeconds();
+                var hostName = System.Net.Dns.GetHostName();
+                var ips = await System.Net.Dns.GetHostAddressesAsync(hostName);
+                var count = 0;
+                string ipx = "";
+                foreach (var ip in ips)
                 {
-                    ipx = ip.ToString();
+                    if (count == 1)
+                    {
+                        ipx = ip.ToString();
+                    }
+                    count++;
                 }
-                count++;
-            }
-            var memHistory = new MemHistory
-            {
-                UserId = userid,
-                Type = "Nạp tiền",
-                TypeCode = 1,
-                Content = content.Body,
-                TimeCreate = unchecked((int)time),
-                Ipcreate = ipx.ToString(),
-            };
-            _context.MemHistories.Add(memHistory);
-            _context.SaveChanges();
-            TempData["AlerMessageSuccess"] = "Bạn đã gửi thông tin Email đến Admin";
-            return Redirect("/nap-the");
+                var memHistory = new MemHistory
+                {
+                    UserId = userid,
+                    Type = "Nạp tiền",
+                    TypeCode = 1,
+                    Content = content.Body,
+                    TimeCreate = unchecked((int)time),
+                    Ipcreate = ipx.ToString(),
+                };
+                _context.MemHistories.Add(memHistory);
+                _context.SaveChanges();
+                TempData["AlerMessageSuccess"] = "Bạn đã gửi thông tin Email đến Admin";
+                return Redirect("/nap-the");
+           
         }
 
         [Route("rut-tien")]
@@ -163,42 +175,54 @@ namespace Gunny.Controllers
             string cookieValueFromReq = Request.Cookies["gunny_userid"];
             int userid = Int32.Parse(cookieValueFromReq);
             var user = _context.MemAccounts.Find(userid);
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-            MailContent content = new MailContent
+            if (payment.NumberOfMoney == null || payment.Note == null)
             {
-                To = config["MailSettingsAdmin:Mail"],
-                Subject = "Thông tin rút tiền tài khoản :" + user.Email,
-                Body = $@" <p>Tài khoản: {user.Email}</p>
+                TempData["AlerMessageError"] = "Không được để trống thông tin gửi";
+                return Redirect("/nap-the");
+            }
+            if (user.Email == null)
+            {
+                TempData["AlerMessageError"] = "Bạn chưa xác minh email";
+                return Redirect("/nap-the");
+            }
+           
+                var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+                MailContent content = new MailContent
+                {
+                    To = config["MailSettingsAdmin:Mail"],
+                    Subject = "Thông tin rút tiền tài khoản :" + user.Email,
+                    Body = $@" <p>Tài khoản: {user.Email}</p>
                             <p>Số tiền rút: {payment.NumberOfMoney}</p>
                             <p>Thông tin ghi chú: {payment.Note} </p>"
-            };
-            _ = SendMail(content);
-            var time = DateTimeOffset.Now.ToUnixTimeSeconds();
-            var hostName = System.Net.Dns.GetHostName();
-            var ips = await System.Net.Dns.GetHostAddressesAsync(hostName);
-            var count = 0;
-            string ipx = "";
-            foreach (var ip in ips)
-            {
-                if (count == 1)
+                };
+                _ = SendMail(content);
+                var time = DateTimeOffset.Now.ToUnixTimeSeconds();
+                var hostName = System.Net.Dns.GetHostName();
+                var ips = await System.Net.Dns.GetHostAddressesAsync(hostName);
+                var count = 0;
+                string ipx = "";
+                foreach (var ip in ips)
                 {
-                    ipx = ip.ToString();
+                    if (count == 1)
+                    {
+                        ipx = ip.ToString();
+                    }
+                    count++;
                 }
-                count++;
-            }
-            var memHistory = new MemHistory
-            {
-                UserId = userid,
-                Type = "Rút tiền",
-                TypeCode = 2,
-                Content = content.Body,
-                TimeCreate = unchecked((int)time),
-                Ipcreate = ipx.ToString(),
-            };
-            _context.MemHistories.Add(memHistory);
-            _context.SaveChanges();
-            TempData["AlerMessageSuccess"] = "Bạn đã gửi thông tin Email đến Admin";
-            return Redirect("/rut-tien");
+                var memHistory = new MemHistory
+                {
+                    UserId = userid,
+                    Type = "Rút tiền",
+                    TypeCode = 2,
+                    Content = content.Body,
+                    TimeCreate = unchecked((int)time),
+                    Ipcreate = ipx.ToString(),
+                };
+                _context.MemHistories.Add(memHistory);
+                _context.SaveChanges();
+                TempData["AlerMessageSuccess"] = "Bạn đã gửi thông tin Email đến Admin";
+                return Redirect("/rut-tien");
+            
         }
 
 

@@ -95,13 +95,13 @@ namespace Gunny.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult PostLogin(string email, string password)
+        public IActionResult PostLogin(MemAccount memAccount)
         {
             if (ModelState.IsValid)
             {
-                var f_password = GetMD5(password);
+                var f_password = GetMD5(memAccount.Password);
 
-                var data = _context.MemAccounts.FirstOrDefault(m => m.Email == email && m.Password == f_password );
+                var data = _context.MemAccounts.FirstOrDefault(m => m.Email == memAccount.Email && m.Password == f_password );
                 if (data!= null )
                 {
                     string userid = data.UserId.ToString();

@@ -189,17 +189,18 @@ namespace Gunny.Controllers
                     return Redirect("/doi-mat-khau-voi-email");
                 }
                 var url = Request.Scheme + "://" + Request.Host.Value;
-                string newPassword = GetMD5(CreatePassword(15));
+                var genPassword = CreatePassword(10);
+                string newPassword = GetMD5(genPassword);
                 MailContent content = new MailContent
                 {
                     To = changePassword.Email,
-                    Subject = "Mật khẩu của bạn : " + newPassword,
+                    Subject = "Mật khẩu của bạn : " + genPassword,
                     Body = "<p>Đăng nhập <strong>" + url + "/dang-nhap" + "</strong></p>"
                 };
                 user.Password = newPassword;
                 _ = SendMail(content);
                 _context.SaveChanges();
-                TempData["AlerMessageSucess"] = "Vui lòng kiểm tra email";
+                TempData["AlerMessageSuccess"] = "Vui lòng kiểm tra email";
                 return Redirect("/doi-mat-khau-voi-email");
             }
         }

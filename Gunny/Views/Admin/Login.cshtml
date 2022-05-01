@@ -1,0 +1,47 @@
+﻿@model Gunny.Models.UserAdmin
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Login.cshtml";
+}
+
+<link href="~/css/Login.css" rel="stylesheet" />
+<p class="tip"></p>
+@using (Html.BeginForm("PostLogin", "Admin", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="cont">
+        @if (@TempData["AlerMessage"] != null)
+        {
+            <div class="alert alert-danger" role="alert" style="display: flex; justify-content: center; width: 100%; }">
+                @TempData["AlerMessage"]
+            </div>
+        }
+        <div class="form sign-in">
+            <h2>Đăng nhập với Admin hệ thống </h2>
+            <label>
+                <span>Tên đăng nhập</span>
+                @Html.TextBoxFor(m => m.Username, "", new { @class = "form-control", @placeholder = "" })
+
+            </label>
+            <label>
+                <span>Mật khẩu</span>
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "" })
+            </label>
+            <button type="submit" class="submit">Đăng nhập</button>
+        </div>
+
+        <div class="sub-cont">
+            <div class="img">
+                <div class="img__text m--up">
+                    <h2>Nhiều sự kện mới!</h2>
+                    <p>Đăng nhập để quản lí khoản chơi game!</p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+}
+
+
