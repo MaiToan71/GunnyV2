@@ -97,97 +97,105 @@ namespace Gunny.Controllers
                 {
                     int userid = Int32.Parse(cookieValueFromReq);
                     var user = _context.MemAccounts.Find(userid);
-                    var listUsers = _context.MemAccounts.Where(m => m.Email == memAccount.Email && m.Email != user.Email);
-                    if (listUsers.Count() > 0)
+                    if (user.IsValidate != true)
                     {
-                        TempData["AlerMessageError"] = "Tài khoản đã tồn tại, hãy nhập tên khác";
-                        return Redirect("/thong-tin-tai-khoan");
-                    }
-                    if (memAccount.Email == null || memAccount.Fullname == null || memAccount.Phone == null ||
-                        memAccount.BankNumber == null || memAccount.BankName == null || memAccount.Cmndnumber == null ||
-                        memAccount.MemEmail == null)
-                    {
-                        TempData["AlerMessageError"] = "Hãy điền đầy đủ thông tin";
-                        return Redirect("/thong-tin-tai-khoan");
-                    }
-
-                    //FILE1
-                    IFormFile file1 = memAccount.Cmndpath1;
-                    var CmndpathName1 = memAccount.NameCmndpath1;
-                    if ( memAccount.NameCmndpath1 == null)
-                    {
-                        
-                        if (file1 == null || file1.Length == 0)
+                        var listUsers = _context.MemAccounts.Where(m => m.Email == memAccount.Email && m.Email != user.Email);
+                        if (listUsers.Count() > 0)
                         {
-                            TempData["AlerMessageError"] = "Đã có lỗi hệ thống! Chưa cập nhật ảnh mặt trước CMND";
+                            TempData["AlerMessageError"] = "Tài khoản đã tồn tại, hãy nhập tên khác";
                             return Redirect("/thong-tin-tai-khoan");
                         }
-                       
-                    }
-                    if (file1 != null)
-                    {
-                        if (file1.Length > 0)
+                        if (memAccount.Email == null || memAccount.Fullname == null || memAccount.Phone == null ||
+                            memAccount.BankNumber == null || memAccount.BankName == null || memAccount.Cmndnumber == null ||
+                            memAccount.MemEmail == null)
                         {
-                            var nameFile1 = CreateName(20);
-                            CmndpathName1 = nameFile1 + file1.FileName;
-                            var path1 = Path.Combine(
-                                        Directory.GetCurrentDirectory(), "wwwroot/files",
-                                       CmndpathName1);
-
-                            using (var stream = new FileStream(path1, FileMode.Create))
-                            {
-                                await file1.CopyToAsync(stream);
-                            }
-                        }
-                    }
-                    //FILE2
-                    var CmndpathName2 = memAccount.NameCmndpath2;
-                    IFormFile file2 = memAccount.Cmndpath2;
-                    if (memAccount.NameCmndpath2== null)
-                    {
-                        
-                        if (file2 == null || file2.Length == 0)
-                        {
-                            TempData["AlerMessageError"] = "Đã có lỗi hệ thống! Chưa cập nhật ảnh mặt sau CMND";
+                            TempData["AlerMessageError"] = "Hãy điền đầy đủ thông tin";
                             return Redirect("/thong-tin-tai-khoan");
                         }
-                    }
-                    if (file2 != null )
-                    {
-                        if (file2.Length > 0)
-                        {
-                            var nameFile2 = CreateName(20);
-                            CmndpathName2 = nameFile2 + file2.FileName;
-                            var path2 = Path.Combine(
-                                        Directory.GetCurrentDirectory(), "wwwroot/files",
-                                       CmndpathName2);
 
-                            using (var stream = new FileStream(path2, FileMode.Create))
+                        //FILE1
+                        IFormFile file1 = memAccount.Cmndpath1;
+                        var CmndpathName1 = memAccount.NameCmndpath1;
+                        if (memAccount.NameCmndpath1 == null)
+                        {
+
+                            if (file1 == null || file1.Length == 0)
                             {
-                                await file2.CopyToAsync(stream);
+                                TempData["AlerMessageError"] = "Đã có lỗi hệ thống! Chưa cập nhật ảnh mặt trước CMND";
+                                return Redirect("/thong-tin-tai-khoan");
+                            }
+
+                        }
+                        if (file1 != null)
+                        {
+                            if (file1.Length > 0)
+                            {
+                                var nameFile1 = CreateName(20);
+                                CmndpathName1 = nameFile1 + file1.FileName;
+                                var path1 = Path.Combine(
+                                            Directory.GetCurrentDirectory(), "wwwroot/files",
+                                           CmndpathName1);
+
+                                using (var stream = new FileStream(path1, FileMode.Create))
+                                {
+                                    await file1.CopyToAsync(stream);
+                                }
                             }
                         }
+                        //FILE2
+                        var CmndpathName2 = memAccount.NameCmndpath2;
+                        IFormFile file2 = memAccount.Cmndpath2;
+                        if (memAccount.NameCmndpath2 == null)
+                        {
+
+                            if (file2 == null || file2.Length == 0)
+                            {
+                                TempData["AlerMessageError"] = "Đã có lỗi hệ thống! Chưa cập nhật ảnh mặt sau CMND";
+                                return Redirect("/thong-tin-tai-khoan");
+                            }
+                        }
+                        if (file2 != null)
+                        {
+                            if (file2.Length > 0)
+                            {
+                                var nameFile2 = CreateName(20);
+                                CmndpathName2 = nameFile2 + file2.FileName;
+                                var path2 = Path.Combine(
+                                            Directory.GetCurrentDirectory(), "wwwroot/files",
+                                           CmndpathName2);
+
+                                using (var stream = new FileStream(path2, FileMode.Create))
+                                {
+                                    await file2.CopyToAsync(stream);
+                                }
+                            }
+                        }
+                        if (user == null)
+                        {
+                            return Redirect("/dang-nhap");
+                        }
+
+                        user.Email = memAccount.Email;
+                        user.Fullname = memAccount.Fullname;
+                        user.Phone = memAccount.Phone;
+                        user.BankNumber = memAccount.BankNumber;
+                        user.BankName = memAccount.BankName;
+                        user.Cmndnumber = memAccount.Cmndnumber;
+                        user.BankUserName = memAccount.BankUserName;
+                        user.MemEmail = memAccount.MemEmail;
+                        user.IsValidate = true;
+                        user.Cmndpath1 = CmndpathName1;
+                        user.Cmndpath2 = CmndpathName2;
+
+                        _context.SaveChanges();
+                        TempData["AlerMessageSuccess"] = "Bạn đã cập nhật thông tin";
+                        return Redirect("/thong-tin-tai-khoan");
                     }
-                    if (user == null)
+                    else
                     {
-                        return Redirect("/dang-nhap");
+                        TempData["AlerMessageError"] = "Bạn đã xác minh, muốn đổi lại thông tin lần tiếp Vui lòng liên hệ Admin";
+                        return Redirect("/thong-tin-tai-khoan");
                     }
-
-                    user.Email = memAccount.Email;
-                    user.Fullname = memAccount.Fullname;
-                    user.Phone = memAccount.Phone;
-                    user.BankNumber = memAccount.BankNumber;
-                    user.BankName = memAccount.BankName;
-                    user.Cmndnumber = memAccount.Cmndnumber;
-                    user.BankUserName = memAccount.BankUserName;
-                    user.MemEmail = memAccount.MemEmail;
-                    user.IsValidate = true;
-                    user.Cmndpath1 = CmndpathName1;
-                    user.Cmndpath2 = CmndpathName2;
-
-                    _context.SaveChanges();
-                    TempData["AlerMessageSuccess"] = "Bạn đã cập nhật thông tin";
-                    return Redirect("/thong-tin-tai-khoan");
                 }
                 catch (Exception)
                 {

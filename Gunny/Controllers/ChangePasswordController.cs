@@ -2,6 +2,7 @@
 using Gunny.Models;
 using Gunny.Models.ChangePassword;
 using MailKit.Security;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
@@ -16,6 +17,12 @@ namespace Gunny.Controllers
 {
     public class ChangePasswordController : Controller
     {
+        public void SetCookie(string key, string value, int? expireTime)
+        {
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddHours(expireTime.Value);
+            Response.Cookies.Append(key, value, option);
+        }
         private readonly Member_GMPContext _context;
         public ChangePasswordController(Member_GMPContext context)
         {
@@ -88,7 +95,6 @@ namespace Gunny.Controllers
             }
         }
 
-
         [Route("doi-mat-khau-voi-email")]
         public IActionResult ChangePasswordWithEmail()
         {
@@ -109,7 +115,6 @@ namespace Gunny.Controllers
                 return View(mem);
             }
         }
-
 
         public static string CreatePassword(int length)
         {
@@ -205,7 +210,6 @@ namespace Gunny.Controllers
             }
         }
 
-
         [Route("mat-khau-cap-2")]
         public IActionResult PasswordLevel2()
         {
@@ -238,26 +242,35 @@ namespace Gunny.Controllers
             }
             else
             {
-                int userid = Int32.Parse(cookieValueFromReq);
-                var user = _context.MemAccounts.Find(userid);
-                if(changePassword.Password2 == null || changePassword.ConfirmPassword2 == null)
+                string cookieCheckPasswordLevel2 = Request.Cookies["password_level2"];
+                if (cookieCheckPasswordLevel2 == null)
                 {
-                    TempData["AlerMessageError"] = "Bạn phải nhập dữ liệu";
+                    int userid = Int32.Parse(cookieValueFromReq);
+                    var user = _context.MemAccounts.Find(userid);
+                    if (changePassword.Password2 == null || changePassword.ConfirmPassword2 == null)
+                    {
+                        TempData["AlerMessageError"] = "Bạn phải nhập dữ liệu";
+                        return Redirect("/mat-khau-cap-2");
+                    }
+                    if (changePassword.Password2 != changePassword.ConfirmPassword2)
+                    {
+                        TempData["AlerMessageError"] = "Nhập lại mật khẩu cấp 2 chưa đúng";
+                        return Redirect("/mat-khau-cap-2");
+                    }
+                    string newPassword2 = GetMD5(changePassword.Password2);
+                    user.Password2 = newPassword2;
+                    SetCookie("password_level2", "true", 9999999);
+                    _context.SaveChanges();
+                    TempData["AlerMessageSuccess"] = "Bạn đã cập nhật thành công mật khẩu cấp 2";
                     return Redirect("/mat-khau-cap-2");
                 }
-                if(changePassword.Password2 != changePassword.ConfirmPassword2)
+                else
                 {
-                    TempData["AlerMessageError"] = "Nhập lại mật khẩu cấp 2 chưa đúng";
+                    TempData["AlerMessageError"] = "Bạn đã cập nhật 1 lần, Vui lòng liên hệ Admin để cập nhật các lần tiếp";
                     return Redirect("/mat-khau-cap-2");
                 }
-                string newPassword2 = GetMD5(changePassword.Password2);
-                user.Password2 = newPassword2;
-                _context.SaveChanges();
-                TempData["AlerMessageSuccess"] = "Bạn đã cập nhật thành công mật khẩu cấp 2";
-                return Redirect("/mat-khau-cap-2");
             }
         }
-
 
         [Route("lay-mat-khau-voi-mat-khau-cap-2")]
         public IActionResult UpdatePasswordWithLevel2()
