@@ -63,6 +63,10 @@ namespace Gunny
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                       name: "areas",
+                       pattern: "{area:exists}/{controller=AdminGunny}/{action=Index}/{id?}"
+                     );
             });
         }
     }

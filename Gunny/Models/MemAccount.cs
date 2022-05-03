@@ -33,5 +33,6 @@ namespace Gunny.Models
         public string Cmndpath2 { get; set; }
         public string MemEmail { get; set; }
         public string Password2 { get; set; }
+        public bool? IsValidatePassword2 { get; set; }
     }
 }

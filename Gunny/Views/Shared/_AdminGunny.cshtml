@@ -15,6 +15,7 @@
     <meta property="og:image" itemprop="thumbnailUrl" content="~/imgs/z3377637276470_e24cfcae73e1fef217585c12e4848b91.jpg" />
     <meta property="og:image:width" content="320">
     <meta property="og:image:height" content="180">
+    <link href="~/lib/bootstrap.min..css" rel="stylesheet" />
 </head>
 <body>
 
@@ -43,29 +44,11 @@
                                 </div>
                                 <div class="content">
                                     <ul>
-                                        <li><a href="/admin/users">Users</a></li>
+                                        <li><a href="/admingunny/users">Users</a></li>
                                     </ul>
                                 </div>
                             </div>
-                            <div class="drowBox">
-                                <div class="opener">
-                                    <a href="javascript:;">Nạp thẻ</a>
-                                    <i class="fas fa-plus-circle"></i>
-                                </div>
-                                <div class="content">
-                                    <ul>
-                                        <li><a href="/nap-the">Nạp thẻ</a></li>
-                                        <li><a href="/rut-tien">Rút tiền</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="drowBox">
-                                <div class="opener">
-                                    <a href="/download">Tải Launcher</a>
-                                    <i class="fas fa-plus-circle"></i>
-                                </div>
-
-                            </div>
+                           
                         </div>
                     </div>
                     <div class="col-md-9 right-menu">
@@ -103,12 +86,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js" integrity="sha512-UXumZrZNiOwnTcZSHLOfcTs0aos2MzBWHXOHOuB0J/R44QB0dwY5JgfbvljXcklVf65Gc4El6RjZ+lnwd2az2g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.0.1/chartjs-plugin-zoom.min.js" integrity="sha512-b+q5md1qwYUeYsuOBx+E8MzhsDSZeoE80dPP1VCw9k/KA9LORQmaH3RuXjlpu3u1rfUwh7s6SHthZM3sUGzCkA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" integrity="sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="~/lib/moment.min.js"></script>
     <script>
         $(document).ready(function () {
+            $(".timecreate").each(function () {
+                var utcSeconds = $(this).text();
+                var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
+                let time = d.setUTCSeconds(utcSeconds);
+                let formatTime = moment(time).format('DD-MM-YYYY HH:mm')
+                $(this).text(formatTime)
+            });
             $('#username-input').val($.cookie("gunny_username"))
             if ($.cookie("gunny_userid") != undefined) {
                 var html = `<ptitle="Tên tài khoản" id="username" href="">${$.cookie("gunny_username")}</p>
-                                <a title="Đăng xuất" href="/dang-xuat">Đăng xuất</a>`
+                                    <a title="Đăng xuất" href="/dang-xuat">Đăng xuất</a>`
                 $('#login').append(html)
             } else {
                 var html = ` <a title="Đăng nhập"  href="/dang-nhap">Đăng nhập</a>`

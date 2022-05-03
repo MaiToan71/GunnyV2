@@ -242,11 +242,13 @@ namespace Gunny.Controllers
             }
             else
             {
-                string cookieCheckPasswordLevel2 = Request.Cookies["password_level2"];
-                if (cookieCheckPasswordLevel2 == null)
+                int userid = Int32.Parse(cookieValueFromReq);
+                var user = _context.MemAccounts.Find(userid);
+                if (user.IsValidatePassword2 == true)
                 {
-                    int userid = Int32.Parse(cookieValueFromReq);
-                    var user = _context.MemAccounts.Find(userid);
+                    TempData["AlerMessageError"] = "Bạn đã thay đổi MK2 một lần, Vui lòng liên hệ Admin đổi lại lần tiếp";
+                    return Redirect("/mat-khau-cap-2");
+                }
                     if (changePassword.Password2 == null || changePassword.ConfirmPassword2 == null)
                     {
                         TempData["AlerMessageError"] = "Bạn phải nhập dữ liệu";
@@ -259,16 +261,12 @@ namespace Gunny.Controllers
                     }
                     string newPassword2 = GetMD5(changePassword.Password2);
                     user.Password2 = newPassword2;
-                    SetCookie("password_level2", "true", 9999999);
+                    user.IsValidatePassword2 = true;
                     _context.SaveChanges();
                     TempData["AlerMessageSuccess"] = "Bạn đã cập nhật thành công mật khẩu cấp 2";
                     return Redirect("/mat-khau-cap-2");
-                }
-                else
-                {
-                    TempData["AlerMessageError"] = "Bạn đã cập nhật 1 lần, Vui lòng liên hệ Admin để cập nhật các lần tiếp";
-                    return Redirect("/mat-khau-cap-2");
-                }
+                
+               
             }
         }
 

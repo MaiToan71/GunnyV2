@@ -97,25 +97,32 @@ namespace Gunny.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult PostLogin(MemAccount memAccount)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var f_password = GetMD5(memAccount.Password);
-
-                var data = _context.MemAccounts.FirstOrDefault(m => m.Email == memAccount.Email && m.Password == f_password );
-                if (data!= null )
+                if (ModelState.IsValid)
                 {
-                    string userid = data.UserId.ToString();
-                    SetCookie("gunny_userid", userid, 9999999);
-                    SetCookie("gunny_username", data.Email, 9999999);
-                    return Redirect("/ca-nhan");
+                    var f_password = GetMD5(memAccount.Password);
+                    var data = _context.MemAccounts.FirstOrDefault(m => m.Email == memAccount.Email && m.Password == f_password);
+                    if (data != null)
+                    {
+                        string userid = data.UserId.ToString();
+                        SetCookie("gunny_userid", userid, 9999999);
+                        SetCookie("gunny_username", data.Email, 9999999);
+                        return Redirect("/ca-nhan");
+                    }
+                    else
+                    {
+                        TempData["AlerMessage"] = "Bạn sai tài khoản hoặc mật khẩu";
+                        return Redirect("/dang-nhap");
+                    }
                 }
-                else
-                {
-                    TempData["AlerMessage"]= "Bạn sai tài khoản hoặc mật khẩu";
-                    return Redirect("/dang-nhap");
-                }
+                return Redirect("/dang-nhap");
             }
-            return Redirect("/dang-nhap");
+            catch (Exception e)
+            {
+                TempData["AlerMessage"] = "Lỗi hệ thống";
+                return Redirect("/dang-nhap");
+            }
 
         }
 
