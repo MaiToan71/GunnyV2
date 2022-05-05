@@ -1,0 +1,1694 @@
+﻿var ViewModel = function () {
+    var self = this;
+    self.mode = ko.observable('');
+    self.product = ko.observable('');
+    self.convertToKoObject = function (data) {
+        var newObj = ko.mapping.fromJS(data);
+        newObj.Selected = ko.observable(false);
+        return newObj;
+    }
+    self.convertToJson = function (item) {
+        if (item == null || item == "") {
+            return [];
+        } else {
+            return JSON.parse(item);
+        }
+    };
+    self.convertToJsonString = function (data) {
+        return JSON.stringify(data)
+    }
+    self.showtoastError = function (msg, title) {
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "positionClass": "toast-top-right",
+            "onclick": null,
+            "showDuration": "3000",
+            "hideDuration": "3000",
+            "timeOut": "3000",
+            "extendedTimeOut": "3000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+        toastr['error'](title, msg);
+    };
+    self.showtoastState = function (msg, title) {
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "positionClass": "toast-top-right",
+            "onclick": null,
+            "showDuration": "3000",
+            "hideDuration": "3000",
+            "timeOut": "3000",
+            "extendedTimeOut": "3000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+        toastr['success'](title, msg);
+    };
+
+    self.checkSetDate = ko.observable(false)
+    self.checkUrl = ko.observable();
+    self.setDate = function () {
+        $('.date-picker').datepicker({
+            rtl: Metronic.isRTL(),
+            orientation: "left",
+            autoclose: true
+        });
+        var today = new Date();
+        var date = "01" + '-0' + (today.getMonth() + 1) + '-' + today.getFullYear();
+        $('#start-date').val(date)
+        $('#end-date').val(new moment().endOf("month").format("DD-MM-YYYY"));
+
+    }
+    self.removeSearch = function () {
+        $('#search-value').val("")
+        self.getWf(false);
+    }
+    self.checkGetAll = ko.observable(true);
+    //searching
+    self.getWfSeaching = function () {
+        self.getWf(true)
+    }
+
+    // get wf
+    self.getWf = function (status) {
+        $.ajax({
+            url: '/api/Workflow/listwf',
+            type: "get",
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (data) {
+                if (status != true) {
+                    self.setDate()
+                }
+                $.each(data, function (ex, item) {
+                    if (item.Name == "WF_ThoiSu") {
+                        self.getStateById(item.ID);
+                    }
+                })
+            }
+        })
+    }
+    self.checkUrl = function () {
+        var pathname = window.location.pathname
+        if (pathname == "/san-xuat-tien-ky") {
+            return { start: 0, end: 3 }
+        }
+        if (pathname == "/san-xuat-hau-ky") {
+            return { start: 3, end: 10 }
+        }
+        if (pathname == "/phat-song") {
+            return { start: 10, end: 11 }
+        }
+        if (pathname == "/nhuan-but") {
+            return { start: 11, end: 15 }
+        }
+        if (pathname == "/nhuan-but") {
+            return { start: 15, end: 16 }
+        }
+
+    }
+    self.dataByState = ko.observableArray();
+    //get state by id
+    self.getStateById = function (id) {
+        $.ajax({
+            url: '/api/Workflow/state/' + id,
+            type: "get",
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (data) {
+                self.dataByState([])
+                self.states([])
+                $.each(data.States, function (ex, item) {
+                    self.states.push(item)
+                })
+                $.each(data.States.slice(self.checkUrl().start, self.checkUrl().end), function (ex, item) {
+                    self.getProjectByStateId(item.ID, item)
+                })
+            }
+        })
+    }
+    self.states = ko.observableArray();
+    self.getProjectByStateId = function (stateId, item) {
+        var fromDate = $('#start-date').val().split('-');
+        var toDate = $('#end-date').val().split('-');
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            /* headers: {
+                 Authorization: "bearer ***********"
+             },*/
+            data: JSON.stringify({
+                query: `query($fromDate:DateTime!, $toDate:DateTime!,$name:String, $stateId:Int!){
+                              searchingProjects(input: {fromDate:$fromDate, toDate:$toDate,name:$name}, order: { modifyDate :DESC}, first: 1000,where: {stateId:{eq: $stateId} ,isDelete: {eq:false}}) {
+                                nodes {
+                                name
+                                  cmscategory {
+                                    id
+                                    name
+                                  }
+                                  id
+                                  name
+                                  stateId
+                                  userName
+                                  createDate
+                                }
+                              }
+                            }`,
+                variables: {
+                    "stateId": stateId,
+                    "name": $('#search-value').val(),
+                    "fromDate": `${fromDate[2]}-${fromDate[1]}-${fromDate[0]} 00:00:00`,
+                    "toDate": `${toDate[2]}-${toDate[1]}-${toDate[0]} 23:59:59 `,
+                    "deleteStatus": false
+                }
+            }),
+            success: function (data) {
+                $.each(data.data.searchingProjects.nodes, function (ex, node) {
+                    node.wf = item
+                })
+                item.Projects = data.data.searchingProjects.nodes
+                self.dataByState.push(self.convertToKoObject(item))
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+
+    self.transisions = ko.observableArray();
+    self.getTransision = function (id) {
+        $.ajax({
+            method: "get",
+            url: "/api/Workflow/transision/" + id,
+            contentType: "application/json",
+            dataType: 'json',
+            /* headers: {
+                 Authorization: "bearer ***********"
+             },*/
+            success: function (data) {
+                self.transisions([])
+                $.each(data.Transitions, function (ex, item) {
+                    self.transisions.push(item)
+                })
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+    self.places = ko.observableArray();
+    // get category 
+    self.categories = ko.observableArray();
+    self.getCagegory = function (id) {
+        let query;
+        query = `query{
+                  categories(first: 100) {
+                    nodes {
+                      id
+                      name
+                    }
+                  }
+                }`
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            /* headers: {
+                 Authorization: "bearer ***********"
+             },*/
+            data: JSON.stringify({
+                query: query
+            }),
+            success: function (data) {
+                self.categories([])
+                $.each(data.data.categories.nodes, function (ex, item) {
+                    self.categories.push(item)
+                })
+                if (id != null) {
+                    $('#project-category').val(id)
+                }
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+    //get fieldgroup
+    self.fieldGroups = ko.observableArray();
+    self.getFieldGroup = function (id) {
+        let query;
+        query = `query{
+                      fieldGroups(first: 100) {
+                        nodes {
+                          id
+                          name
+                        }
+                      }
+                    }`
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            /* headers: {
+                 Authorization: "bearer ***********"
+             },*/
+            data: JSON.stringify({
+                query: query
+            }),
+            success: function (data) {
+                self.fieldGroups([])
+                $.each(data.data.fieldGroups.nodes, function (ex, item) {
+                    self.fieldGroups.push(item)
+                })
+                self.selectedFieldGroup();
+                if (id != null) {
+                    $('#project-fieldGroup').val(id)
+                }
+                self.getGroupGenre()
+
+
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+    //groupGenre
+    self.groupGenres = ko.observableArray();
+    self.getGroupGenre = function (id) {
+        let query;
+        query = `query{
+                      groupGenres(where: {fieldGroupId :{eq :${Number($('#project-fieldGroup').val())} }}) {
+                        nodes {
+                          id
+                          name
+                          cmsgenres {
+                            name
+                            id
+                          }
+                        }
+                      }
+                    }`
+
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            /* headers: {
+                 Authorization: "bearer ***********"
+             },*/
+            data: JSON.stringify({
+                query: query
+            }),
+            success: function (data) {
+                self.groupGenres([])
+                $.each(data.data.groupGenres.nodes, function (ex, item) {
+                    self.groupGenres.push(item)
+                })
+                if (self.mode() == "edit") {
+                    $('#project-groupGenre').val(self.project().groupGenreId())
+                    self.getCmsGenresGroupGenreId()
+                }
+                self.selectedCmsGenres()
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+    self.cmsGenres = ko.observableArray();
+    self.getCmsGenresGroupGenreId = function () {
+        let query;
+        query = `query($groupGenreId:Int!){
+                      cmsgenres(first: 100,where: {groupGenreId :{eq: $groupGenreId}}) {
+                        nodes {
+                          id
+                          name
+                          groupGenreId
+                        }
+                      }
+                    }`
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            /* headers: {
+                 Authorization: "bearer ***********"
+             },*/
+            data: JSON.stringify({
+                query: query,
+                variables: {
+                    groupGenreId: Number($('#project-groupGenre').val())
+                }
+            }),
+            success: function (data) {
+                self.cmsGenres([])
+                $.each(data.data.cmsgenres.nodes, function (ex, item) {
+                    self.cmsGenres.push(item)
+                })
+                if (self.mode() == "edit") {
+                    $('#project-cmsgenre').val(self.project().cmsGenreId())
+                }
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+
+    self.genreProducts = ko.observableArray();
+    self.getGenreProducts = function (id) {
+        let query = `query{
+                      genreProducts {
+                        nodes {
+                          id
+                          name
+                        }
+                      }
+                    }`
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            /* headers: {
+                 Authorization: "bearer ***********"
+             },*/
+            data: JSON.stringify({
+                query: query
+            }),
+            success: function (data) {
+                self.genreProducts([])
+                $.each(data.data.genreProducts.nodes, function (ex, item) {
+                    self.genreProducts.push(self.convertToKoObject(item))
+                })
+                if (id != null) {
+                    $('#project-genreProduct').val(id)
+                }
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+    self.stateIdSecond = ko.observable();
+
+    self.showModalAdd = function () {
+        self.product("last")
+        self.stateIdSecond(self.dataByState()[1].ID())
+        self.getTransision(self.stateIdSecond())
+        self.getCagegory(null);
+        self.getFieldGroup(null)
+        self.getGenreProducts(null);
+        $('#project-modal').modal('show')
+        self.level("")
+        self.mode('add')
+    }
+    self.objProjectInput = function (stateId, id, isPublish, listUserTag) {
+        objProject = {
+            cmsCategoryId: Number($('#project-category').val()),
+            fieldGroupId: Number($('#project-fieldGroup').val()),
+            groupGenreId: Number($('#project-groupGenre').val()),
+            cmsGenreId: Number($('#project-cmsgenre').val()),
+            genreProductId: Number($('#project-genreProduct').val()),
+            name: $('#project-name').val(),
+            description: $('#project-description').val(),
+            duration: $('#project-duration').val(),
+            onAirDate: moment().format('YYYY-MM-DDTHH:mm:ss'),
+            place: "",
+            note: $('#project-description').val(),
+            stateId: stateId,
+            userId: $.cookie("userid"),
+            id: id,
+            documentId: 0,
+            status: 0,
+            userName: $.cookie("UserName"),
+            isPublish: isPublish,
+            listUserTag: JSON.stringify(listUserTag)
+        }
+        return objProject
+    }
+
+    self.deleteProjectById = function (item) {
+        bootbox.confirm({
+            message: "Bạn có muốn xóa đề tài: " + item.name(),
+            buttons: {
+                confirm: {
+                    label: 'Đồng ý',
+                    className: 'btn-success'
+                },
+                cancel: {
+                    label: 'Hủy bỏ',
+                    className: 'btn-danger'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    let query = `
+                                    mutation($id:Int!){
+                                      deleteProjectById(input: {id:$id}) {
+                                        id
+                                      }
+                                    }`
+                    $.ajax({
+                        method: "POST",
+                        url: backendUrl + "/graphql",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            query: query,
+                            variables: {
+                                "id": Number(item.id())
+                            }
+                        }),
+                        success: function (data) {
+                            self.showtoastState("Đã xóa  đề tài", "Thành công")
+                            self.getWf();
+                        },
+                        error: function (err) {
+                            //console.log(err);
+                        }
+                    })
+
+                }
+            }
+        });
+    }
+
+    self.addProject = function () {
+        let query = `mutation($id:Int!, $userId:String, $userName:String, $stateId:Int!,
+                    $cmsCategoryId:Int!,$cmsGenreId:Int!,$fieldGroupId:Int! ,$groupGenreId:Int!,$status:Int!,
+                    $duration:String, $name:String, $description:String,
+                    $place:String,$note:String,$listUserTag:String,$genreProductId:Int!, $onAirDate :String, $documentId:Int!, $isPublish:Boolean!){
+                      createProject (createInput:{
+                        id:$id,
+                        userId:$userId,
+                        userName:$userName,
+                        stateId:$stateId,
+                        cmscategoryId:$cmsCategoryId,
+                        cmsgenreId:$cmsGenreId,
+                         fieldGroupId:$fieldGroupId,
+                         groupGenreId:$groupGenreId,
+                         duration:$duration,
+                         name:$name,
+                         description:$description,
+                         place:$place,
+                         onAirDate:$onAirDate,
+                         note:$note,
+                         documentId:$documentId,
+                         genreProductId:$genreProductId,
+                         status: $status,
+                         isPublish:$isPublish,
+                         listUserTag :$listUserTag
+                      } ){
+                        id
+                      }
+                    }`
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            data: JSON.stringify({
+                query: query,
+                variables: self.objProjectInput(self.stateIdSecond(), 0, false, self.listUserTag())
+            }),
+            success: function (data) {
+                self.getWf();
+                $('#project-modal').modal('hide')
+                $('#noti-modal').modal('hide')
+                self.showtoastState("Bạn đã thêm mới thành công dữ liệu")
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+
+    }
+
+    self.project = ko.observable("");
+    self.openModalEdit = function (item) {
+        console.log()
+        if (item.wf.Name() == "Level_4") {
+            self.product("")
+        } else {
+            self.product("last")
+        }
+       
+        $('#project-modal').modal('show')
+        self.getProjectById(item)
+    }
+    self.listUserTag = ko.observableArray();
+    self.getProjectById = function (item) {
+        let query = `query($stateId: Int, $id:Int!) {
+                    projects(where: {stateId: {eq: $stateId}, id:{eq:$id}}, order: { modifyDate :DESC} ){
+                        nodes {
+                          placeId
+                          place
+                          id
+                          stateId
+                          name
+                          modifyDate
+                          createDate
+                          cmscategoryId
+                          groupGenreId
+                          cmsGenreId
+                          fieldGroupId
+                          duration
+                          description
+                          documentId
+                          onAirDate
+                          note
+                          userId
+                          userName
+                          genreProductId
+                          listUserTag
+                        }
+                      }
+                    }`
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            data: JSON.stringify({
+                query: query,
+                variables: {
+                    "stateId": item.stateId(),
+                    "id": item.id()
+                }
+            }),
+            success: function (data) {
+                console.log(data.data.projects.nodes[0].listUserTag)
+                self.listUserTag([])
+                if (data.data.projects.nodes[0].listUserTag != null) {
+                    if (data.data.projects.nodes[0].listUserTag.length > 0) {
+                        data.data.projects.nodes[0].listUserTag = JSON.parse(data.data.projects.nodes[0].listUserTag)
+                        $.each(data.data.projects.nodes[0].listUserTag, function (ex, item) {
+                            self.listUserTag.push(item)
+                        })
+                    }
+                } else {
+                    data.data.projects.nodes[0].listUserTag = []
+                }
+                self.mode('edit')
+                data.data.projects.nodes[0].isPublish = item.wf.PublishState()
+                data.data.projects.nodes[0].level = item.wf.Name()
+                self.project(self.convertToKoObject(data.data.projects.nodes[0]))
+
+
+                self.getGenreProducts(self.project().genreProductId())
+                self.getCagegory(self.project().cmscategoryId())
+                self.getFieldGroup(self.project().fieldGroupId())
+                $('#project-duration').val(self.project().duration())
+                $('#project-onAirDate').val(self.project().onAirDate())
+                $('#project-name').val(self.project().name())
+                $('#project-description').val(self.project().description())
+                self.getTransision(self.project().stateId());
+                self.level(self.project().level())
+                //check listUserTag
+                self.getTagGenreEdit();
+                self.getTagGenreProject();
+                if (self.product() == "last") {
+                    self.getUserByUserProject();
+                    self.loadMediaByProjectId();
+                }
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+    self.level = ko.observable("");
+    self.listUserTag = ko.observableArray([]);
+    self.updateProject = function () {
+        self.listUserTag([])
+        if ($('#project-list-user').val() != null) {
+            $.each($('#project-list-user').val(), function (ex, userid) {
+                $.each(self.Users(), function (ex, user) {
+                   
+                    if (user.Id == userid) {
+                        self.listUserTag.push(user)
+                    }
+                })
+            })
+        }
+        let query = `mutation($id:Int!, $userId:String, $userName:String, $stateId:Int!,
+                    $cmsCategoryId:Int!,$cmsGenreId:Int!,$fieldGroupId:Int! ,$groupGenreId:Int!,$status:Int!,
+                    $duration:String, $name:String, $description:String,
+                    $place:String,$note:String,$listUserTag:String,$genreProductId:Int!, $onAirDate :String, $documentId:Int!, $isPublish:Boolean!){
+                      updateProject (createInput:{
+                        id:$id,
+                        userId:$userId,
+                        userName:$userName,
+                        stateId:$stateId,
+                        cmscategoryId:$cmsCategoryId,
+                        cmsgenreId:$cmsGenreId,
+                         fieldGroupId:$fieldGroupId,
+                         groupGenreId:$groupGenreId,
+                         duration:$duration,
+                         name:$name,
+                         description:$description,
+                         place:$place,
+                         onAirDate:$onAirDate,
+                         note:$note,
+                         documentId:$documentId,
+                         genreProductId:$genreProductId,
+                         status: $status,
+                         isPublish:$isPublish,
+                         listUserTag :$listUserTag
+                      } ){
+                        id
+                      }
+                    }`
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            data: JSON.stringify({
+                query: query,
+                variables: self.objProjectInput(self.project().stateId(), self.project().id(), self.project().isPublish(), self.listUserTag())
+            }),
+            success: function (data) {
+                self.getWf();
+                $('#noti-modal').modal('hide')
+                if (self.sendListProject() == "send") {
+                    self.showtoastState("Bạn đã gửi biên tập")
+                    $('#send-list-project').modal('hide')
+                }
+                if (self.sendListProject() == "") {
+                    self.showtoastState("Bạn đã cập nhật dữ liệu thành công")
+                    var counUpdate = 0;
+                    for (var i = 0; i < 20; i++){
+                        if (self.level().split('_')[1] >= 11) {
+                            counUpdate++;
+                            if (counUpdate == 1) {
+                                console.log("save order")
+                                self.saveOrder()
+                            }
+                         }
+                    }
+                }
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+self.listLevel = ["Level_1"]
+    self.selectedTagGenres = function () {
+        $('#project-cmsgenre').on('change', function () {
+            self.getTagGenres(null);
+        });
+    }
+    self.selectedCmsGenres = function () {
+        $('#project-groupGenre').on('change', function () {
+            self.getCmsGenresGroupGenreId(this.value, null);
+        });
+    }
+    self.selectedFieldGroup = function () {
+        $('#project-fieldGroup').on('change', function () {
+            self.getGroupGenre(null);
+        });
+    }
+
+    self.PublishState = ko.observable()
+    self.checkPublishState = function (DestinationStateID) {
+        $.each(self.states(), function (ex, state) {
+            if (DestinationStateID == state.ID) {
+                self.PublishState(state.PublishState)
+            }
+        })
+    }
+
+    self.submitSendProject = function () {
+        let query = `mutation($id:Int!, $userId:String, $userName:String, $stateId:Int!,
+                    $cmsCategoryId:Int!,$cmsGenreId:Int!,$fieldGroupId:Int! ,$groupGenreId:Int!,$status:Int!,
+                    $duration:String, $name:String, $description:String,
+                    $place:String,$note:String,$listUserTag:String,$genreProductId:Int!, $onAirDate :String, $documentId:Int!, $isPublish:Boolean!){
+                      updateProject (createInput:{
+                        id:$id,
+                        userId:$userId,
+                        userName:$userName,
+                        stateId:$stateId,
+                        cmscategoryId:$cmsCategoryId,
+                        cmsgenreId:$cmsGenreId,
+                         fieldGroupId:$fieldGroupId,
+                         groupGenreId:$groupGenreId,
+                         duration:$duration,
+                         name:$name,
+                         description:$description,
+                         place:$place,
+                         onAirDate:$onAirDate,
+                         note:$note,
+                         documentId:$documentId,
+                         genreProductId:$genreProductId,
+                         status: $status,
+                         isPublish:$isPublish,
+                         listUserTag :$listUserTag
+                      } ){
+                        id
+                      }
+                    }`
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            data: JSON.stringify({
+                query: query,
+                variables: self.objProjectInput(self.sendItem().DestinationStateID, self.project().id(), self.PublishState())
+            }),
+            success: function (data) {
+                $('#project-modal').modal('hide')
+                self.getWf();
+                self.showtoastState("Bạn đã gửi để tài")
+                $('#noti-modal').modal('hide')
+            },
+            error: function (err) {
+            }
+        })
+    }
+    self.sendItem = ko.observable();
+    self.sendProject = function (item) {
+        self.checkPublishState(item.DestinationStateID)
+        self.sendItem(item);
+        self.getListUsersByUserId();
+        $('#noti-modal').modal('show')
+    }
+
+
+    self.openModalEmployee = function () {
+        self.getTagGenres();
+        self.getListUsersByUserId()
+        $('#employee-modal').modal()
+    }
+    self.openModalEmployeeToList = function () {
+        self.getGroupUsersByUserId()
+        $('#employee-modal-list').modal()
+    }
+
+    self.getGroupUsersByUserId = function () {
+        $.ajax({
+            method: "get",
+            url: "/api/workflow/groupuser/userid/" + $.cookie("userid"),
+            contentType: "application/json",
+            success: function (data) {
+                self.listUsers([])
+                $.each(data, function (ex, item) {
+                    self.getUserById(item)
+                })
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+    self.listUsers = ko.observableArray();
+   
+    self.getUserById = function (groupUser) {
+        var payload = {
+            ID: [groupUser.ID],
+            Page: 0,
+            Size: 100
+        }
+        $.ajax({
+            url: "/api/workflow/group/id",
+            type: "post",
+            data: JSON.stringify(payload),
+            contentType: 'application/json',
+            dataType: 'json'
+        }).done(function (data) {
+          
+            $.each(data.Users, function (ex, item) {
+                item.GroupUserId = groupUser.ID;
+                item.GroupName = groupUser.Name
+                self.listUsers.push(item)
+            })
+            console.log(self.listUsers())
+        });
+    }
+
+    self.getTagGenres = function () {
+        let query = `query($cmsGenreId:Int!){
+                      tagGenres(first: 100, where: {cmsgenreId: {eq: $cmsGenreId}}) {
+                        nodes {
+                          id
+                          name
+                        }
+                      }
+                    }`
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            /* headers: {
+                 Authorization: "bearer ***********"
+             },*/
+            data: JSON.stringify({
+                query: query,
+                variables: {
+                    "cmsGenreId": Number($('#project-cmsgenre').val())
+                }
+            }),
+            success: function (data) {
+                self.tagGenres([])
+                $.each(data.data.tagGenres.nodes, function (ex, item) {
+                    self.tagGenres.push(self.convertToKoObject(item))
+                })
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+    self.tagGenreEdit = ko.observableArray();
+    self.getTagGenreEdit = function () {
+        let query = `query($projectId:Int!, $cmsGenreId:Int!){
+                                  tagGenreByProjectId(input: {cmsGenreId: $cmsGenreId, projectId:$projectId} ){}
+                                }`
+        $.ajax({
+            method: "post",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            /* headers: {
+                 Authorization: "bearer ***********"
+             },*/
+            data: JSON.stringify({
+                query: query,
+                variables: {
+                    "cmsGenreId": Number(self.project().cmsGenreId()),
+                    "projectId": Number(self.project().id())
+                }
+            }),
+            success: function (data) {
+                self.tagGenreEdit([])
+                $.each(JSON.parse(data.data.tagGenreByProjectId), function (ex, item) {
+                    if (item.userGenres.length == 0) {
+                        item.status = false;
+                    } else {
+                        item.status = true
+                    }
+                    $.each(item.userGenres, function (ex, modalTagGenre) {
+                        modalTagGenre.modalTagGenreId = item.id;
+                    })
+                    self.tagGenreEdit.push(self.convertToKoObject(item))
+                })
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+    self.listProject = ko.observableArray();
+    self.getTagGenreProject = function () {
+        let query = `query($projectId:Int!){
+                              listTagProjects(projectId: $projectId)
+                            }`
+        $.ajax({
+            method: "post",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            /* headers: {
+                 Authorization: "bearer ***********"
+             },*/
+            data: JSON.stringify({
+                query: query,
+                variables: {
+                    "projectId": Number(self.project().id())
+                }
+            }),
+            success: function (data) {
+                self.listProject([])
+                $.each(JSON.parse(data.data.listTagProjects), function (ex, project) {
+                    self.listProject.push(self.convertToKoObject(project))
+                })
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+    self.tagGenres = ko.observableArray()
+    self.getListUsersByUserId = function () {
+        $.ajax({
+            method: "get",
+            url: "/api/workflow/groupuser/userid/" + $.cookie("userid"),
+            contentType: "application/json",
+            /* headers: {
+                 Authorization: "bearer ***********"
+             },*/
+
+            success: function (data) {
+                var array = [];
+                $.each(data, function (ex, item) {
+                    array.push(item.ID)
+                })
+                self.getUser(array)
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+    self.Users = ko.observableArray()
+    self.getUser = function (array) {
+        var payload = {
+            ID: array,
+            Page: 0,
+            Size: 100
+        }
+        $.ajax({
+            url: "/api/workflow/group/id",
+            type: "post",
+            data: JSON.stringify(payload),
+            contentType: 'application/json',
+            dataType: 'json'
+        }).done(function (data) {
+            self.Users([])
+            $.each(data.Users, function (ex, item) {
+                self.Users.push(item)
+            })
+            $('#sendEmail').select2()
+            $('#project-list-user').select2()
+            $.each(data.Users, function (ex, item) {
+                $('#employee-input-' + item.Id).select2();
+            })
+           
+        });
+    }
+
+    self.user = ko.observable();
+    self.submitEmpployeeByProject = function () {
+        var inputArray = []
+        var array = [];
+        var checkboxes = $('input[name="checkedEmployee[]"]');
+        checkboxes.filter(":checked").map(function () {
+            array.push(this.value)
+        }).get();
+        $.each(array, function (ex, userid) {
+            $.each(self.Users(), function (ex, item) {
+                if (item.Id == userid) {
+                    var obj = {
+                        userId: userid,
+                        modalTagGenreIds: [],
+                        projectId: self.project().id(),
+                        fullName: item.FullName,
+                        email : item.Email,
+                        phone : item.Phone,
+                       
+                    }
+                    
+                    if ($('#employee-input-' + userid).val() != null) {
+                        obj.modalTagGenreIds =  $('#employee-input-' + userid).val().map(i => Number(i))
+                    }
+                    inputArray.push(obj)
+                   
+                }
+            })
+        })
+     
+            let query = `mutation($listInputs:ListInput){
+                          userModify(listInputs: $listInputs ) {
+                            id
+                            fullName
+                          }
+                        }`
+            $.ajax({
+                method: "POST",
+                url: backendUrl + "/graphql",
+                contentType: "application/json",
+                
+                data: JSON.stringify({
+                    query: query,
+                    variables: {
+                        listInputs: {
+                            listInputs: inputArray
+                        }
+                    }
+                }),
+                success: function (data) {
+                    $('#employee-modal').modal('hide')
+                    self.showtoastState("Cập nhật thành công", "Thành công")
+                    self.getTagGenreEdit()
+                },
+                error: function (err) {
+                    //console.log(err);
+                }
+
+            })
+
+    }
+
+    self.removeUserInProject = function (item) {
+        let query = `mutation($userId:Int!,$modalTagGenreId:Int!,  $projectId: Int! ){
+                              removeModifyAsync (removeInput: {userId: $userId,modalTagGenreId: $modalTagGenreId, projectId:$projectId}){
+                                projectId
+                              }
+                            }`
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            data: JSON.stringify({
+                query: query,
+                variables: {
+                    projectId: self.project().id(),
+                    userId: item.id(),
+                    modalTagGenreId: item.modalTagGenreId()
+                }
+            }),
+            success: function (data) {
+                self.getTagGenreEdit()
+                self.showtoastState("Đã xóa dữ liệu", "Thành công")
+            },
+            error: function (err) {
+            }
+        })
+    }
+
+    self.openModalProduct = function () {
+        $('#list-product-modal').modal('show')
+        self.getListProduct();
+    }
+    self.listProducts = ko.observableArray();
+    self.getListProduct = function () {
+        let query = `
+               query( $userId : String){
+                   projectByUserIdTag(userId: $userId)
+                }`
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+           
+            data: JSON.stringify({
+                query: query,
+                variables: {
+                    "userId": $.cookie("userid")
+                }
+               
+            }),
+            success: function (data) {
+                console.log(data)
+                self.listProducts([])
+                $.each(JSON.parse(data.data.projectByUserIdTag), function (ex, item) {
+                    self.listProducts.push(self.convertToKoObject(item))
+                })
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+
+    
+    self.updateTagProject = function () {
+        var array = [];
+        var checkboxes = $('input[name="checked[]"]');
+        checkboxes.filter(":checked").map(function () {
+            array.push(Number(this.value))
+        }).get();
+        let obj = {
+            projectId: self.project().id(),
+            tagIds: array
+        }
+        let query = `mutation($projectId: Int!, $tagIds:[Int!]){
+                          modifyTagProject(listProjectTags: { projectId: $projectId,tagIds:$tagIds})
+                        }`
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            /* headers: {
+                 Authorization: "bearer ***********"
+             },*/
+            data: JSON.stringify({
+                query: query,
+                variables: obj
+
+            }),
+            success: function (data) {
+                $('#list-product-modal').modal('hide')
+                self.getTagGenreProject()
+                self.showtoastState("Đã cập nhật tác phẩm được chọn")
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+
+    self.sendListProject = ko.observable("")
+    self.sendListProjectAction = function () {
+        self.getListUsersByUserId()
+        self.sendListProject('send')
+        $('#send-list-project').modal('show')
+    }
+
+    self.removeProjectInList = function (item) {
+        console.log(item.tagProjectId())
+        let query = `mutation($tagProjectId:Int!){
+                      removeTagProject(tagProjectId: $tagProjectId)
+                    }`
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            data: JSON.stringify({
+                query: query,
+                variables: {
+                    tagProjectId: item.tagProjectId()
+                }
+            }),
+            success: function (data) {
+                self.getTagGenreProject()
+                self.showtoastState("Đã xóa tác phẩm tại danh sách ")
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+
+    self.submitEmpployeeListByProject = function () {
+        var array = [];
+        var checkboxes = $('input[name="checkedEmployeeList[]"]');
+        checkboxes.filter(":checked").map(function () {
+            array.push(this.value)
+        }).get();
+        var inputs = []
+        $.each(self.listUsers(), function (ex, user) {
+            $.each(array, function (ex, userid) {
+                if (userid == user.Id) {
+                    var obj = {
+                        projectId: self.project().id(),
+                        userId: userid,
+                        fullName: user.FullName,
+                        phone: user.Phone,
+                        email: user.Email
+                    }
+                    inputs.push(obj)
+                }
+            })
+            
+        })
+        let query = `mutation( $listInputs :[ListInputUserProjectInput]){
+                          userProjectModify (listInputs: $listInputs){
+                            id
+                          }
+                        }`
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            data: JSON.stringify({
+                query: query,
+                variables: {
+                    "listInputs": inputs
+                }
+            }),
+            success: function (data) {
+                $('#employee-modal-list').modal('hide')
+                self.getUserByUserProject();
+                self.showtoastState("Đã thêm mới nhân sự")
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+
+
+    self.listUserInUserProject = ko.observableArray();
+    self.getUserByUserProject = function () {
+        let query = `query{
+                  projects(where: {id :{eq:${self.project().id()}}}) {
+                    nodes {
+                      id
+                      name
+                      userProjects {
+                       user {
+                         id
+                         fullName
+                       }
+                      }
+                    }
+                  }
+                }`
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            data: JSON.stringify({
+                query: query,
+               
+            }),
+            success: function (data) {
+                self.listUserInUserProject([])
+                if (data.data.projects.nodes[0].userProjects.length > 0) {
+                    $.each(data.data.projects.nodes[0].userProjects, function (ex, item) {
+                        self.listUserInUserProject.push(self.convertToKoObject(item.user))
+                    })
+                }
+                
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+
+    self.removeUserProject = function (item) {
+        var obj = {
+            projectId: self.project().id(),
+            userId: item.id()
+        }
+        let query = `mutation($projectId:Int!, $userId:Int!){
+                  removeUserProjectModify(projectId: $projectId, userId: $userId)
+                }`
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            data: JSON.stringify({
+                query: query,
+                variables: obj
+            }),
+            success: function (data) {
+                self.showtoastState("Đã xóa nhân sự")
+                self.getUserByUserProject();
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+
+
+    //uploader 
+    self.openUploadFile = function () {
+        $('#upload-project').modal('show')
+    }
+
+    self.addNewFile = function () {
+        $('#percent').css("width", "0%")
+        $('#percent').css("background-color", "green")
+        $('#percent').html('0%')
+        $('#percent').css("display", "none")
+        self.selectUploadType();
+    }
+    self.check = ko.observable("")
+
+    var checkImage = true;
+    self.selectUploadType = function () {
+        $("#select_file").replaceWith($("#select_file").clone());
+        $('#select_file').trigger('click');
+        $('#select_file').change(function (e) {
+            var files = $("#select_file")[0].files;
+            var myExt = files[0].name;
+            //var fileExtension = ['jpg', 'png'];
+            console.log(myExt)
+            self.check(myExt.slice(myExt.length - 3, myExt.length))
+            $.each(files, function (idx, file) {
+                UploadFile(file);
+            });
+
+        });
+    }
+    function createGuid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+    self.selectedCategory = ko.observable();
+    self.timeUpload = ko.observable("");
+    function UploadFile(file) {
+        $('#percent').css('display', 'block')
+        self.timeUpload(moment().format("DDMMYYYYHHmmss"));
+        $('#upload-progress').modal('show');
+        guid = createGuid();
+        // create array to store the buffer chunks
+        var FileChunk = [];
+        // the file object itself that we will work with
+        // set up other initial vars
+        var MaxFileSizeMB = 5;
+        var BufferChunkSize = MaxFileSizeMB * (1024 * 1024);
+        var ReadBuffer_Size = 1024;
+        var FileStreamPos = 0;
+        // set the initial chunk length
+        var EndPos = BufferChunkSize;
+        var Size = file.size;
+
+        // add to the FileChunk array until we get to the end of the file
+        while (FileStreamPos < Size) {
+            // "slice" the file from the starting position/offset, to  the required length
+            FileChunk.push(file.slice(FileStreamPos, EndPos));
+            FileStreamPos = EndPos; // jump by the amount read
+            EndPos = FileStreamPos + BufferChunkSize; // set next chunk length
+        }
+        // get total number of "files" we will be sending
+        var TotalParts = FileChunk.length;
+        var PartCount = 0;
+        console.log(EndPos)
+        // loop through, pulling the first item from the array each time and sending it
+        while (chunk = FileChunk.shift()) {
+            PartCount++;
+            // file name convention
+            var FilePartName = file.name + ".part_" + PartCount + "." + TotalParts;
+            // send the file
+
+            uploadFileChunk(chunk, FilePartName, Size);
+        }
+
+    }
+
+    self.link = ko.observable("");
+    self.categories = ko.observableArray();
+    self.domainUploader = ko.observable(uploadUrl);
+
+    self.uploadResult = ko.observable();
+    function uploadFileChunk(Chunk, FileName, size) {
+        if (self.selectedCategory() == null) {
+            self.selectedCategory(self.categories()[0]);
+        }
+        var name = "thaiguyen";
+        var path = "attach" + "//" + moment().format("YYYY") + "//" + moment().format("MM") + "//" + moment().format("DD") + "//" + FileName;
+        var payload = {
+            Name: name,
+            Path: path,
+            Title: "",
+            Description: "",
+            Type: "video",
+            Time: self.timeUpload(),
+            Size: [{ width: -1, height: -1 }],
+            FileSize: size
+        };
+        self.fileSizes.push(payload.FileSize)
+        var url = self.domainUploader() + '/gateway?metadata=' + ko.mapping.toJSON(payload);
+
+        var FD = new FormData();
+        FD.append('file', Chunk, FileName);
+        $.ajax({
+            type: "POST",
+            url: url,
+            contentType: false,
+            processData: false,
+            data: FD
+        }).success(function (data) {
+            $('#percent').css("display", "block")
+            $('#percent').css("width", `${data.Percent}%`)
+            $('#percent').css("background-color", "green")
+            $('#percent').text(`${data.Percent}%`)
+            $('#link').css("display", "block")
+            if (data.Percent == 100) {
+                $('#percent').css("display", "none")
+                var link = 'https://storage.vnews.tek4tv.vn' + '/' + data.Path;
+                var obj = {
+                    type: link.slice(link.length - 3, link.length),
+                    link: link,
+                }
+                self.link(self.convertToKoObject(obj));
+            }
+
+        }).error(function () {
+        });;
+    }
+    self.fileSizes = ko.observableArray();
+
+    self.updateMedia = function () {
+        if (self.link() != "") {
+            var obj = {
+                id: 0,
+                name: $('#filename').val(),
+                path: self.link().link(),
+                projectId: self.project().id(),
+                type: self.link().type()
+            }
+            let query = `mutation($id:Int!, $name:String, $path:String, $projectId:Int!, $type:String){
+                          modifyMedia(input: {id: $id, name:$name,path:$path,projectId:$projectId,type:$type})
+                        }`
+            if (obj.name.length == 0) {
+                self.showtoastError("Bạn chưa nhập tên nội dung file", 'Có lỗi')
+            } else {
+                $.ajax({
+                    method: "POST",
+                    url: backendUrl + "/graphql",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        query: query,
+                        variables: obj
+                    }),
+                    success: function (data) {
+                        $('#upload-project').modal('hide')
+                        self.loadMediaByProjectId()
+                        self.showtoastState("Đã thêm file vào đề tài", "Thành công")
+                    },
+                    error: function (err) {
+                        //console.log(err);
+                    }
+                })
+            }
+        } else {
+            self.showtoastError("Bạn chưa tải file", 'Có lỗi')
+        }
+    }
+    self.medias = ko.observableArray();
+    self.loadMediaByProjectId = function () {
+        let query = `query( $id: Int!){
+                      projects(where: {id:{eq:$id} }) {
+                        nodes {
+                          id
+                          media {
+                            id
+                            projectId
+                            name
+                            type
+                            path
+                          }
+                        }
+                      }
+                    }`
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            data: JSON.stringify({
+                query: query,
+                variables: {
+                    "id": self.project().id()
+                }
+            }),
+            success: function (data) {
+                console.log(data)
+                self.medias([]);
+                $.each(data.data.projects.nodes[0].media, function (ex, item) {
+                    self.medias.push(item)
+                })
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+
+    self.removeMedia = function (item) {
+        var obj = {
+            projectId: item.projectId,
+            mediaId: item.id,
+        }
+        var data = { data: obj };
+        let query = `mutation ($data: MediumRemoveInput) {
+                      removeMedium(remove: $data) {
+                        id
+                        projectId
+                      }
+                    }`
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            /* headers: {
+                 Authorization: "bearer ***********"
+             },*/
+            data: JSON.stringify({
+                query: query,
+                variables: data
+            }),
+            success: function (data) {
+                self.loadMediaByProjectId()
+                self.showtoastState("Đã xóa dữ liệu", "Thành công")
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+
+    //save project order
+    self.saveOrder = function () {
+        var array = [];
+        var count = 0
+        $.each(self.listProject(), function (ex, item) {
+            count++;
+            var obj = {
+                id: item.tagProjectId(),
+                duration: Number($('#duration' + item.projectId()).val()),
+                projectOrder: count,
+
+            }
+            array.push(obj)
+        })
+        let query = `mutation( $inputs:[TagProjectInput]){
+                  updateTagProject(inputs: $inputs)
+                }`
+        $.ajax({
+            method: "POST",
+            url: backendUrl + "/graphql",
+            contentType: "application/json",
+            /* headers: {
+                 Authorization: "bearer ***********"
+             },*/
+            data: JSON.stringify({
+                query: query,
+                variables: {
+                    "inputs": array
+                }
+            }),
+            success: function (data) {
+            },
+            error: function (err) {
+                //console.log(err);
+            }
+        })
+    }
+
+
+    // calendar plan
+    self.showModalCalendarPlan = function () {
+        self.index(0)
+        self.listTimeSchedule([])
+        $('#modal-calendar-plan').modal('show')
+        $('#modal-calendar-plan').on('shown.bs.modal', function () {
+            if (!jQuery().fullCalendar) {
+                return;
+            }
+            var date = new Date();
+            var h = {};
+            if (Metronic.isRTL()) {
+                if ($('#calendar').parents(".portlet").width() <= 720) {
+                    $('#calendar').addClass("mobile");
+                    h = {
+                        right: 'title, prev, next',
+                        center: '',
+                        left: 'agendaDay, agendaWeek, month, today'
+                    };
+                } else {
+                    $('#calendar').removeClass("mobile");
+                    h = {
+                        right: 'title',
+                        center: '',
+                        left: 'agendaDay, agendaWeek, month, today, prev,next'
+                    };
+                }
+            } else {
+                if ($('#calendar-plan').parents(".portlet").width() <= 720) {
+                    $('#calendar-plan').addClass("mobile");
+                    h = {
+                        left: 'title, prev, next',
+                        center: '',
+                        right: 'today,month,agendaWeek,agendaDay'
+                    };
+                } else {
+                    $('#calendar-plan').removeClass("mobile");
+                    h = {
+                        left: 'title',
+                        center: '',
+                        right: 'prev,next,today,month,agendaWeek,agendaDay'
+                    };
+                }
+            }
+            $('#calendar-plan').fullCalendar('destroy'); // destroy the calendar
+            $('#calendar-plan').fullCalendar({ //re-initialize the calendar
+                header: h,
+                height: 'auto',
+                defaultView: 'agendaWeek',
+                slotMinutes: 15,
+                editable: true,
+                droppable: true, // this allows things to be dropped onto the calendar !!!,
+                dayClick: function (date, jsEvent, calEvent) {
+                    self.getDay(date._d);
+                },
+                eventClick: function (calEvent, jsEvent, view) {
+                    $('#calendar-plan').fullCalendar('removeEvents', calEvent._id);
+                },
+            });
+          
+        })
+    }
+    self.listTimeSchedule = ko.observableArray();
+    self.index = ko.observable(0);
+    self.addTimeSchedule = function () {
+        self.index(self.index()+ 1)
+        var obj = {
+            start: "",
+            end: "",
+            name: "",
+            index: self.index()
+        }
+        self.listTimeSchedule.push(self.convertToKoObject(obj))
+        $('.timepicker-24').timepicker({
+            autoclose: true,
+            minuteStep: 5,
+            showSeconds: false,
+            showMeridian: false
+        });
+    }
+    self.isChoose = ko.observable();
+   
+    self.events = ko.observableArray();
+    self.getDay = function (date) {
+        var array = [];
+        var checkboxes = $('input[name="checkBoxTimeSelected[]"]');
+        checkboxes.filter(":checked").map(function () {
+            array.push(this.value)
+        }).get();
+        var formatvalue = new Date(date);
+        var d = formatvalue.getDate();
+        var m = formatvalue.getMonth();
+        var y = formatvalue.getFullYear();
+
+        var listArrayInput = []
+        $.each(self.listTimeSchedule(), function (ex, item) {
+            $.each(array, function (ex, index) {
+                if (index == item.index()) {
+                    var myEvent = {
+                        calendarid: 0,
+                        userId: "",
+                        projectId: "",
+                        title: `admin : ${item.name()}`,
+                        name: item.name(),
+                        start: new Date(y, m, d, item.start().split(':')[0], item.start().split(':')[1]),
+                        end: new Date(y, m, d, item.end().split(':')[0], item.end().split(':')[1]),
+                        allDay: false,
+                        backgroundColor: "blue"
+                    };
+                    $('#calendar-plan').fullCalendar('renderEvent', myEvent);
+                }
+            })
+           
+        })
+       
+    }
+
+
+}
+$(function () {
+    var viewModel = new ViewModel();
+    viewModel.getWf(false);
+    ko.applyBindings(viewModel);
+});

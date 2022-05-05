@@ -15,5 +15,6 @@ namespace Gunny.Models
         public int Value { get; set; }
         public int? TimeCreate { get; set; }
         public string Ipcreate { get; set; }
+        public bool? IsRead { get; set; }
     }
 }

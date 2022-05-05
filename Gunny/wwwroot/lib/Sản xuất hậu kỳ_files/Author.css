@@ -1,0 +1,238 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+}
+
+.start a span {
+    color: black;
+}
+
+.start:hover a{
+    background-color: #fff;
+}
+
+.start:hover a span {
+    color: #fff;
+}
+
+.lists-container {
+    margin-left: -18px;
+}
+
+.top-nav {
+    margin-left: 201px;
+}
+
+.page-sidebar navbar-collapse collapse {
+    margin-top: 55px;
+}
+
+.page-container {
+    margin-top: 0px;
+}
+
+.page-logo {
+    margin-right: 15px;
+}
+
+
+/*Navbar CSS*/
+.navbar-menu {
+    display: flex;
+}   
+
+.navbar-menu .navbar-item {
+    margin: 5px 10px !important;
+    line-height: 38px;
+    margin: 0;
+    font-weight: bold;
+    height: 30px;
+    cursor: pointer;
+    font-size: 15px;
+    text-decoration: none !important;
+}
+
+.navbar-menu .navbar-item:hover {
+    border-bottom: 3px solid #228B22;
+    transition: 0.2s linear;
+}
+
+.navbar-menu .total-item {
+    margin-top: 15px;
+    height: 18px !important;
+    padding-right: 10px;
+    color: #333;
+    border-right: 1px solid #3333;
+    font-size: 15px;
+}
+
+.navbar-menu + .total-item {
+    margin-left: 0px !important;
+}
+
+.navbar-menu .total-item::after {
+}
+
+@keyframes toTop {
+    from {
+        height: 0px;
+    }
+
+    to {
+        height: 160px;
+    }
+}
+
+@keyframes display {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.option-item:hover .menu-option {
+    display: block;
+    animation: toTop 0.6s linear;
+}
+
+.option-item:hover .menu-option li {
+    animation: display 0.7s ease;
+}
+
+.menu-option {
+    display: none;
+    position: absolute;
+    top: 100%;
+    background-color: #fff;
+    width: 170px;
+    border: 1px solid #3333;
+    border-radius: 4px !important;
+    z-index: 1005;
+    box-shadow: 2px 2px #808080;
+}
+
+.menu-option li {
+    padding: 10px 5px;
+    list-style-type: none;
+    border-bottom: 1px solid #3333;
+    font-size: 1.4rem;
+}
+
+.menu-option li:hover {
+    background-color: #3f4f62;
+}
+
+.menu-option li a {
+    text-decoration: none;
+    color: black;
+    display: block;
+}
+
+.menu-option li:hover a {
+    color: #fff;
+}
+
+
+
+.menu-option li:hover {
+    opacity: 1;
+}
+
+/*End Navbar CSS*/
+
+/*Modal Author*/
+.appointment {
+    font-weight: bold;
+}
+
+.appointment .appointment-number {
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.appointment .appointment-number:hover {
+    opacity: 0.9;
+}
+
+.container-form {
+    border: 1px solid #3333;
+    position: relative;
+    height: 150px;
+    padding: 10px;
+}
+
+.container-form .label-form {
+    position: absolute;
+    left: 4%;
+    padding: 0px 17px;
+    top: -5%;
+    background-color: #fff;
+    margin: 0;
+}
+
+.container-form p {
+    padding: 10px 0;
+}
+
+.form-group {
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.form-group .item-label {
+    font-size: 15px;
+}
+
+.form-group .item-container {
+    margin-left: 20px;
+    border-bottom: 1px solid #3333;
+    width: 68%;
+    position: absolute;
+    right: 0;
+    bottom: 20%;
+
+}
+
+.form-group {
+    margin: 0 !important;
+    padding: 5px 0 !important;
+}
+
+.form-group .item-div {
+    display: flex; 
+    border-bottom: none;
+    font-size: 17px;
+    margin-left: 20px;
+}
+
+.item-div p {
+    color: #333;
+    border: 1px solid #808080;
+    padding: 3px 15px;
+    border-radius: 5px;
+    border-radius: 5px !important;
+    width: 115px;
+}
+
+.place {
+    padding-left: 114px !important;
+}
+
+.device {
+    padding-left: 170px !important;
+}
+
+.place,
+.device {
+}
+
+
+live-preview-root {
+    display: none !important;
+}
+
+/*End Modal Author*/

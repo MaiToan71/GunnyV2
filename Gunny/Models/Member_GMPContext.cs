@@ -36,20 +36,14 @@ namespace Gunny.Models
         public virtual DbSet<MemSocial> MemSocials { get; set; }
         public virtual DbSet<MemSupport> MemSupports { get; set; }
         public virtual DbSet<MemSupportDatum> MemSupportData { get; set; }
+        public virtual DbSet<NewUserAdmin> NewUserAdmins { get; set; }
         public virtual DbSet<News> News { get; set; }
         public virtual DbSet<ServerList> ServerLists { get; set; }
         public virtual DbSet<SupportCategory> SupportCategories { get; set; }
         public virtual DbSet<UserAdmin> UserAdmins { get; set; }
         public virtual DbSet<WsItemDuaTop> WsItemDuaTops { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=LAPTOP-DO63GVQ8\\SQLEXPRESS;Database=Member_GMP;Trusted_Connection=True;");
-            }
-        }
+      
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -398,6 +392,23 @@ namespace Gunny.Models
                 entity.Property(e => e.UserId).HasColumnName("UserID");
             });
 
+            modelBuilder.Entity<NewUserAdmin>(entity =>
+            {
+                entity.ToTable("new_user_admin");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Password)
+                    .HasMaxLength(50)
+                    .HasColumnName("password");
+
+                entity.Property(e => e.Type).HasColumnName("type");
+
+                entity.Property(e => e.Username)
+                    .HasMaxLength(50)
+                    .HasColumnName("username");
+            });
+
             modelBuilder.Entity<News>(entity =>
             {
                 entity.Property(e => e.NewsId).HasColumnName("NewsID");
@@ -473,6 +484,8 @@ namespace Gunny.Models
 
             modelBuilder.Entity<UserAdmin>(entity =>
             {
+                entity.HasNoKey();
+
                 entity.ToTable("user_admin");
 
                 entity.Property(e => e.Id).HasColumnName("id");
