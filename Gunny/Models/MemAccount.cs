@@ -34,5 +34,9 @@ namespace Gunny.Models
         public string MemEmail { get; set; }
         public string Password2 { get; set; }
         public bool? IsValidatePassword2 { get; set; }
+        public bool? IsBlock { get; set; }
+        public string ParentId { get; set; }
+        public string Presenter { get; set; }
+        public string Avatar { get; set; }
     }
 }

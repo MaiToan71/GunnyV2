@@ -1,0 +1,9 @@
+.body > div {
+    background-color: #F6F3E4 !important;
+    display:flex;
+    justify-content:center;
+   
+}
+.body {
+    margin-top: 40px;
+}

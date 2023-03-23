@@ -16,11 +16,14 @@ namespace Gunny.Models.InformationMemAccount
         public string NameCmndpath1 { get; set; }
         public IFormFile Cmndpath2 { get; set; }
         public string NameCmndpath2 { get; set; }
+        public IFormFile AvatarLink { get; set; }
+        public string AvatarName { get; set; }
         public string BankNumber { get; set; }
         public string BankName { get; set; }
         public string Cmndnumber { get; set; }
         public string BankUserName { get; set; }
         public bool? IsValidate { get; set; }
         public string MemEmail { get; set; }
+        public string Presenter { get; set; }
     }
 }

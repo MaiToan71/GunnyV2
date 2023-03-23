@@ -27,9 +27,19 @@ namespace Gunny.Controllers
             {
                 int userid = Int32.Parse(cookieValueFromReq);
                 var user = _context.MemAccounts.Find(userid);
+               
                 if (user == null)
                 {
                     return Redirect("/dang-nhap");
+                }
+                ViewBag.userAgency = null;
+                if (user.Presenter != null)
+                {
+                    var userAgency = _context.MemAccounts.FirstOrDefault( m=> m.Email== user.Presenter);
+                    if(userAgency!= null)
+                    {
+                        ViewBag.userAgency = userAgency;
+                    }
                 }
                 var memAccount = new Models.InformationMemAccount.User
                 {
@@ -46,6 +56,7 @@ namespace Gunny.Controllers
                     BankUserName = user.BankUserName,
                     IsValidate = user.IsValidate,
                 };
+                
                 return View(memAccount);
             }
         }

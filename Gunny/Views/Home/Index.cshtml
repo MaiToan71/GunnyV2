@@ -1,90 +1,134 @@
 ﻿@{
     ViewData["Title"] = "Trang chủ";
 }
-<style>
-    
-</style>
-<div class="container marketing  ">
-    <div class="row">
-        <img class="img-fluid"  src="~/imgs/z3377702267159_2ff8c05e0eb66ec151427a062ff00df4.jpg" />
+<div class="row-content pos-top " >
+  <div class='block_banners banners_0 blocks_banner c-banner_showpc blocks0 block'>
+        <div id="block-16" class="block-banner-home-new block-banner block-banner-fullpage ">
+            <div id="" class="banner-home-new owl-carousel owl-theme">
+                            <div class="item">
+                                <a title="Banner top" href="#">
+                                    <img src="/files/banner.jpg" class="img-responsive ">
+                                </a>
+                            </div>
+            </div>
+        </div>
     </div>
-    <hr class="featurette-divider">
-    <div class="row">
-        <div class="col-lg-4">
-            <img class="rounded-circle" src="~/imgs/z3377637502356_f41bf63db3f7b1883988cb645541b32d.jpg" alt="Generic placeholder image" width="140" height="140">
-            <h2>New chicken</h2>
+</div>
+<div class="block_products products_2 blocks_products blocks2 block">
+    <div id="block-22" class="block-products block-products-default" style="">
+        <div class="container">
+            <div class="block-heading">
+                <a href="" class="heading">Đại lý nổi bật</a>
+            </div>
+            <div class="block-content">
+                <div class="row pro-box-list box-home">
+                    @foreach (var item in ViewBag.TopUsers)
+                    {
+                    <div class="col-lg-3 col-md-4 col-sm-6 c-item col-xs-6 ">
+                        <a href="javasctipt:;" alt="@item.fullname" class="c-image">
+                                @if (@item.avatar != null)
+                                {
+                                    <img src="/files/@item.avatar" alt="@item.fullname" class="img-fluid img-first  c-img_4137 lazy " style="height:300px">
+                                    <img src="/files/@item.avatar" alt="@item.fullname" class="img-fluid  img-sec lazy" style="height:300px">
+                                }
+                                @if (@item.avatar == null)
+                                {
+                                    <img src="/imgs/user.png" alt="@item.fullname" class="img-fluid img-first  c-img_4137 lazy " style="height:300px">
+                                    <img src="/imgs/user.png" alt="@item.fullname" class="img-fluid  img-sec lazy" style="height:300px">
+                                }
+                            </a>
+                        <div class="price">
+                            <p class="c-price">
+                                <span style="">100$</span>
+                                <br/>
+                                    <span style="">@item.count đăng ký </span>
+
+                            </p>
+                            <div>
+                                    <div class="add-to-cart " data-username="@item.email">
+                                        <button class="btn btn-sm btn-success @item.email">Đăng ký</button>
+                                </div>
+                                <div id="list-size-936" class="list-size">
+                                </div>
+                            </div>
+
+                        </div>
+                        <h3 class="c-name">
+                                <a href="javasctipt:;" title="@item.fullname" class="name">
+                                    @item.fullname 
+                            </a>
+                        </h3>
+                    </div>
+                   }
+                </div>
+            </div>
            
         </div>
-        <div class="col-lg-4">
-            <img class="rounded-circle" src="~/imgs/z3377637572730_449849e11dda111b9446e49930c1bc99.jpg" alt="Generic placeholder image" width="140" height="140">
-            <h2>Funny chicken</h2>
-        </div>
-        <div class="col-lg-4">
-            <img class="rounded-circle" src="~/imgs/z3377637555249_b2abcaecb74a3275b23649f3f9697e64.jpg"  alt="Generic placeholder image" width="140" height="140">
-            <h2>Master chicken</h2>
-        </div>
-
     </div>
+</div>
+<div class="block_banners banners_3 blocks_banner blocks3 block">
+    <div class="container">
+        <div id="block-23" class="block-border-top block-banner block-banner-list_4" style="float:none;">
+            <div class="block-heading">
+                <p class="heading">
+                   Danh sách tài khoản <span></span>
+                </p>
+            </div>
+            <!--end: .block-heading-->
+            <div class="row row-insta">
+                @foreach(var item in ViewBag.ListUsers){
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 col-item">
+                    <a href="" title="@item.name" target="_blank">
+                            @if (@item.avatar != null){
+                                <img src="/files/@item.avatar" alt="@item.name" class="img-responsive lazy" style="height:150px">
+                }
+                            @if (@item.avatar == null)
+                            {
+                                <img src="/imgs/user.png" alt="@item.name" class="img-responsive lazy" style="height:150px">
+                            }
+                            
+                            <p>@item.fullname</p>
+                    </a>
 
-    <hr class="featurette-divider">
-
-    <div class="row featurette" id="text-1">
-        <div class="col-md-7">
-            <h2 class="featurette-heading">What is Gunny Invesment?</h2>
-            <p class="lead">Gunny Invesment is a game project published by ATK Group. This is the first online game project to become a professional investment game project. Using the legendary version, Gunny Investment promises to give players a lot of emotions when experiencing this special game project.</p>
+                </div>
+                }
+            </div>
+            @if (ViewBag.Total > 0)
+            {
+                <div class='pagination justify-content-end'>
+                    @{
+                        int pageCount = 0;
+                        int totalCount = ViewBag.Pages.Count - 1;
+                    }
+                    <a title="first_page" href="@ViewBag.Url?page=1">Trang đầu</a>
+                    <a title="first_page" href="@ViewBag.Url?page=@ViewBag.prevNumber">«</a>
+                    @foreach (var page in ViewBag.Pages)
+                    {
+                        { pageCount++; totalCount--; }
+                        if (ViewBag.pageNumber > @pageCount - 2 && ViewBag.pageNumber < @pageCount + 2)
+                        {
+                            if (ViewBag.pageNumber == @pageCount)
+                            {
+                                <a class='current' title='Page ' href='@ViewBag.Url'>@pageCount</a>
+                            }
+                            if (ViewBag.pageNumber != @pageCount)
+                            {
+                                <a rel='nofollow' class='other-page' title='Page @pageCount' href='@ViewBag.Url?page=@pageCount'>@pageCount</a>
+                            }
+                        }
+                    }
+                    @if (ViewBag.nextNumber <= @ViewBag.Pages.Count)
+                    {
+                        <a title="first_page" href='@ViewBag.Url?page=@ViewBag.nextNumber'>»</a>
+                    }
+                    <a title='Last page' href='@ViewBag.Url?page=@ViewBag.Pages.Count'>Trang cuối</a>
+                </div>
+            }
         </div>
-
-        <div class="col-md-5">
-            <img class="featurette-image img-fluid mx-auto" src="~/imgs/z3377637517193_d240a3d4fb1a63b626d39a135eb11041.jpg" alt="Generic placeholder image">
-        </div>
+        <!--end: #block-23-->
     </div>
-
-    <hr class="featurette-divider">
-
-    <div class="row featurette">
-        <div class="col-md-7 order-md-2">
-            <h2 class="featurette-heading">Beginner's Guide?</h2>
-            <p class="lead">At Gunny Investment, players can freely experience all the features of a traditional Gunny game project with their friends such as: Compete alone, Compete in groups, Compete with your spouse, Fight monsters, …</p>
-        </div>
-        <div class="col-md-5 order-md-1">
-            <img class="featurette-image img-fluid mx-auto" src="~/imgs/z3377637645340_252b8788532cad8fd368e1ce1d98e41f.jpg" alt="Generic placeholder image">
-        </div>
-    </div>
-
-    <hr class="featurette-divider">
-    <div class="row featurette">
-        <div class="col-md-7">
-            <h2 class="featurette-heading">  What are the mechanics of making money in the game?</h2>
-            <p class="lead">
-              
-                Players will invest in their character. Then use the character to destroy the monster in the copy. Thanks to that, players will have a chance to receive a Pirate Chest. With each pirate chest, players have a chance to get $100. In addition, players can also earn money by Racing TOP, Winning tournaments or inviting new players to become VIPs. Very attractive, isn't it?
-            </p>
-        </div>
-        <div class="col-md-5">
-            <img class="featurette-image img-fluid mx-auto" src="~/imgs/z3377637659776_1c9b4d34bec4bf61b51b1c05b71bad29.jpg" alt="Generic placeholder image">
-        </div>
-    </div>
-
-    <hr class="featurette-divider">
-
-
-
 </div>
 
 @section Scripts {
-   <script>
-       function goToByScroll() {
-           // Reove "link" from the ID
-          
-           // Scroll
-           $('html,body').animate({
-               scrollTop: $("#text-1" ).offset().top
-           },
-               'slow');
-       }
-       $(".my-menu-link-1").click(function (e) {
-           e.preventDefault();
-           goToByScroll();
-       })
-   </script>
+    <script type="text/javascript" src="/frontend/home.js?v=20230319084959"></script>
 }

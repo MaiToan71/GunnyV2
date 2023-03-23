@@ -1,37 +1,118 @@
-﻿using Gunny.Models;
+﻿using Gunny.Helper;
+using Gunny.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace Gunny.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        Users _users = new Users();
 
-        public HomeController(ILogger<HomeController> logger)
+        public IActionResult Index(int? page)
         {
-            _logger = logger;
-        }
+            int pageNumber = 1;
 
-        public IActionResult Index()
-        {
+            if (page == null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                pageNumber = (int)page;
+                if (page <= 0)
+                {
+                    pageNumber = 1;
+                }
+            }
+            ViewBag.TopUsers = _users.TopHome().Result;
+            var list = _users.ListUser(pageNumber).Result;
+            ViewBag.ListUsers = list.result;
+
+            ViewBag.Total = list.total;
+
+            List<int> pages = new List<int>();
+            int total = (int)list.total;
+            for (var i = 0; i <= total / 20; i++)
+            {
+                pages.Add(i);
+            }
+            if (pages.Count() == 0)
+            {
+                pages.Add(1);
+            }
+            ViewBag.pageNumber = pageNumber;
+            int prevNumber = pageNumber - 1;
+            if (prevNumber <= 0)
+            {
+                prevNumber = 1;
+            }
+            ViewBag.prevNumber = prevNumber;
+            int nextNumber = pageNumber + 1;
+            if (nextNumber <= 0)
+            {
+                nextNumber = 1;
+            }
+            ViewBag.nextNumber = nextNumber;
+            ViewBag.Pages = pages;
             return View();
         }
 
-        public IActionResult Privacy()
+        [Route("/tim-kiem/{search}")]
+        public IActionResult Search(int? page, string search)
         {
-            return View();
-        }
+            int pageNumber = 1;
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (page == null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                pageNumber = (int)page;
+                if (page <= 0)
+                {
+                    pageNumber = 1;
+                }
+            }
+            var list = _users.SearchListUser(pageNumber, search).Result;
+            ViewBag.ListUsers = list.result;
+
+            ViewBag.Total = list.total;
+            ViewBag.Search = search;
+
+            List<int> pages = new List<int>();
+            int total = (int)list.total;
+            for (var i = 0; i <= total / 20; i++)
+            {
+                pages.Add(i);
+            }
+            if (pages.Count() == 0)
+            {
+                pages.Add(1);
+            }
+            ViewBag.pageNumber = pageNumber;
+            int prevNumber = pageNumber - 1;
+            if (prevNumber <= 0)
+            {
+                prevNumber = 1;
+            }
+            ViewBag.prevNumber = prevNumber;
+            int nextNumber = pageNumber + 1;
+            if (nextNumber <= 0)
+            {
+                nextNumber = 1;
+            }
+            ViewBag.nextNumber = nextNumber;
+            ViewBag.Pages = pages;
+            return View();
         }
     }
 }

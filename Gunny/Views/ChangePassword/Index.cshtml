@@ -3,6 +3,11 @@
     ViewData["Title"] = "Đổi mật khẩu";
     Layout = "~/Views/Shared/_AccountAdmin.cshtml";
 }
+<style>
+    .row{
+        margin-bottom:30px;
+    }
+</style>
 <h1>Đổi mật khẩu với mật khẩu cũ</h1>
 <hr />
 @using (Html.BeginForm("Change", "ChangePassword", FormMethod.Post))

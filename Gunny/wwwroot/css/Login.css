@@ -84,7 +84,7 @@ button {
         top: 0;
         width: 900px;
         height: 100%;
-        background-image: url("/imgs/z3377637645340_252b8788532cad8fd368e1ce1d98e41f.jpg");
+        background-image: url("/imgs/background.png");
         background-size: cover;
         transition: transform 1.2s ease-in-out;
     }

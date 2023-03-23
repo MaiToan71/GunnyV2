@@ -3,25 +3,30 @@
     ViewData["Title"] = "Thông tin cá nhân";
     Layout = "~/Views/Shared/_AccountAdmin.cshtml";
 }
+<style>
+    .account {
+        margin-bottom: 30px;
+    }
+</style>
 
-<h1>Thông tin cá nhân</h1>
-<hr />
-<div class="row account">
-    <div class="col-md-5">Tên đăng nhập</div>
-    <div class="col-md-7">@Model.Email</div>
-</div>
-<div class="row account">
-    <div class="col-md-5">Email</div>
-    <div class="col-md-7">@Model.MemEmail</div>
-</div>
-<div class="row account">
-    <div class="col-md-5">Họ và tên</div>
-    <div class="col-md-7">@Model.Fullname</div>
-</div>
-<div class="row account">
-    <div class="col-md-5">Số điện thoại</div>
-    <div class="col-md-7">@Model.Phone</div>
-</div>
-
-
-
+@if (ViewBag.userAgency != null)
+{
+    <div class="col-md-3">
+        <div class="card card-xl-stretch mb-5 mb-xl-12">
+            <div class="card-body py-3 row">
+                <div class="row account">
+                    <div class="col-md-5">Tên đại lý</div>
+                    <div class="col-md-7">@ViewBag.userAgency.Fullname</div>
+                </div>
+                     <div class="row account">
+                    <div class="col-md-5">Số điện thoại</div>
+                    <div class="col-md-7">@ViewBag.userAgency.Phone</div>
+                </div>
+                     <div class="row account">
+                <div class="col-md-5">Email</div>
+                    <div class="col-md-7">@ViewBag.userAgency.MemEmail</div>
+            </div>
+            </div>
+        </div>
+    </div>
+}
