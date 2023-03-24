@@ -3,162 +3,60 @@
 }
 
 <div class="row-content pos_contents_top" style="margin-top:15px">
-    <h4>Có @ViewBag.Total kết quả với từ khóa : @ViewBag.Search</h4>
+    <h4>Có @ViewBag.Total kết quả với từ khóa : <span style="color:red">@ViewBag.Search</span></h4>
                 </div>
-<div class="block_banners banners_3 blocks_banner blocks3 block">
-    <div class="container">
-        <div id="block-23">
+<div class="block_products products_2 blocks_products blocks2 block">
+    <div id="block-22" class="block-products block-products-default" style="">
+        <div class="container">
             <div class="block-heading">
-                <p class="heading">
-                   Danh sách tài khoản <span></span>
-                </p>
+                <a href="" class="heading">Danh sách tìm kiếm</a>
             </div>
-            <!--end: .block-heading-->
-            <div class="row row-insta">
-                @foreach(var item in ViewBag.ListUsers){
-                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 col-item">
-                    <a href="" title="@item.name" target="_blank">
-                        <img src="/files/@item.avatar" alt="@item.name" class="img-responsive lazy" style="">
-                        <span>@item.fullname</span>
-                    </a>
+            <div class="block-content">
+                <div class="row pro-box-list box-home">
+                    @foreach (var item in ViewBag.ListUsers)
+                    {
+                        <div class="col-lg-3 col-md-4 col-sm-6 c-item col-xs-6 ">
+                            <a href="javasctipt:;" alt="@item.fullname" class="c-image">
+                                @if (@item.avatar != null)
+                                {
+                                    <img src="/files/@item.avatar" alt="@item.fullname" class="img-fluid img-thumbnail img-first  c-img_4137 lazy ">
+                                    <img src="/files/@item.avatar" alt="@item.fullname" class="img-fluid img-thumbnail img-sec lazy">
+                                }
+                                @if (@item.avatar == null)
+                                {
+                                    <img src="/imgs/user.png" alt="@item.fullname" class="img-fluid img-thumbnail img-first  c-img_4137 lazy ">
+                                    <img src="/imgs/user.png" alt="@item.fullname" class="img-fluid img-thumbnail  img-sec lazy">
+                                }
+                            </a>
+                            <div class="price">
+                                <p class="c-price">
+                                    <span style="">100$</span>
+                                    <br />
+                                    <span style="">@item.count đăng ký </span>
 
+                                </p>
+                                <div>
+                                    <div class="add-to-cart " data-username="@item.email">
+                                        <button class="btn btn-sm btn-success @item.email">Đăng ký</button>
+                                    </div>
+                                    <div id="list-size-936" class="list-size">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <h3 class="c-name">
+                                <a href="javasctipt:;" title="@item.fullname" class="name">
+                                    @item.fullname
+                                </a>
+                            </h3>
+                        </div>
+                    }
                 </div>
-                }
             </div>
-            @if (ViewBag.Total > 0)
-            {
-                <div class='pagination justify-content-end'>
-                    @{
-                        int pageCount = 0;
-                        int totalCount = ViewBag.Pages.Count - 1;
-                    }
-                    <a title="first_page" href="@ViewBag.Url?page=1">Trang đầu</a>
-                    <a title="first_page" href="@ViewBag.Url?page=@ViewBag.prevNumber">«</a>
-                    @foreach (var page in ViewBag.Pages)
-                    {
-                        { pageCount++; totalCount--; }
-                        if (ViewBag.pageNumber > @pageCount - 2 && ViewBag.pageNumber < @pageCount + 2)
-                        {
-                            if (ViewBag.pageNumber == @pageCount)
-                            {
-                                <a class='current' title='Page ' href='@ViewBag.Url'>@pageCount</a>
-                            }
-                            if (ViewBag.pageNumber != @pageCount)
-                            {
-                                <a rel='nofollow' class='other-page' title='Page @pageCount' href='@ViewBag.Url?page=@pageCount'>@pageCount</a>
-                            }
-                        }
-                    }
-                    @if (ViewBag.nextNumber <= @ViewBag.Pages.Count)
-                    {
-                        <a title="first_page" href='@ViewBag.Url?page=@ViewBag.nextNumber'>»</a>
-                    }
-                    <a title='Last page' href='@ViewBag.Url?page=@ViewBag.Pages.Count'>Trang cuối</a>
-                </div>
-            }
         </div>
-        <!--end: #block-23-->
     </div>
 </div>
-@*<div class="list-top-users">
-    <h2>Danh sách địa lý </h2>
-    <div class="row pro-box-list box-home">
-        <div class="col-lg-3 col-md-4 col-sm-6 c-item col-xs-6  ">
-            <a href="#" alt="Onus Skirt (cv)" class="c-image">
-                <img src="/imgs/user.png" alt="Onus Skirt (cv)" class="img-fluid img-first  c-img_4137 lazy " style="">
-            </a>
-            <div class="price">
-                <p class="c-price">
-                    <button type="button" class="btn btn-primary btn-sm">Thông tin</button>
-                </p>
-                <div>
-                    <div class="add-to-cart" data-id="936">
-                        <button type="button" class="btn btn-success btn-sm">Đăng ký</button>
-                    </div>
-                    <div id="list-size-936" class="list-size">
-                    </div>
-                </div>
-
-            </div>
-            <h3 class="c-name">
-                <a href="#" title="Onus Skirt (cv)" class="name">
-                    Onus Skirt (cv)
-                </a>
-            </h3>
-        </div>
-        <div class="col-lg-3 col-md-4 col-sm-6 c-item col-xs-6  ">
-            <a href="#" alt="Onus Skirt (cv)" class="c-image">
-                <img src="/imgs/user.png" alt="Onus Skirt (cv)" class="img-fluid img-first  c-img_4137 lazy " style="">
-            </a>
-            <div class="price">
-                <p class="c-price">
-                    <button type="button" class="btn btn-primary btn-sm">Thông tin</button>
-                </p>
-                <div>
-                    <div class="add-to-cart" data-id="936">
-                        <button type="button" class="btn btn-success btn-sm">Đăng ký</button>
-                    </div>
-                    <div id="list-size-936" class="list-size">
-                    </div>
-                </div>
-
-            </div>
-            <h3 class="c-name">
-                <a href="#" title="Onus Skirt (cv)" class="name">
-                    Onus Skirt (cv)
-                </a>
-            </h3>
-        </div>
-        <div class="col-lg-3 col-md-4 col-sm-6 c-item col-xs-6  ">
-            <a href="#" alt="Onus Skirt (cv)" class="c-image">
-                <img src="/imgs/user.png" alt="Onus Skirt (cv)" class="img-fluid img-first  c-img_4137 lazy " style="">
-            </a>
-            <div class="price">
-                <p class="c-price">
-                    <button type="button" class="btn btn-primary btn-sm">Thông tin</button>
-                </p>
-                <div>
-                    <div class="add-to-cart" data-id="936">
-                        <button type="button" class="btn btn-success btn-sm">Đăng ký</button>
-                    </div>
-                    <div id="list-size-936" class="list-size">
-                    </div>
-                </div>
-
-            </div>
-            <h3 class="c-name">
-                <a href="#" title="Onus Skirt (cv)" class="name">
-                    Onus Skirt (cv)
-                </a>
-            </h3>
-        </div>
-        <div class="col-lg-3 col-md-4 col-sm-6 c-item col-xs-6  ">
-            <a href="#" alt="Onus Skirt (cv)" class="c-image">
-                <img src="/imgs/user.png" alt="Onus Skirt (cv)" class="img-fluid img-first  c-img_4137 lazy " style="">
-            </a>
-            <div class="price">
-                <p class="c-price">
-                    <button type="button" class="btn btn-primary btn-sm">Thông tin</button>
-                </p>
-                <div>
-                    <div class="add-to-cart" data-id="936">
-                        <button type="button" class="btn btn-success btn-sm">Đăng ký</button>
-                    </div>
-                    <div id="list-size-936" class="list-size">
-                    </div>
-                </div>
-
-            </div>
-            <h3 class="c-name">
-                <a href="#" title="Onus Skirt (cv)" class="name">
-                    Onus Skirt (cv)
-                </a>
-            </h3>
-        </div>
-    </div>
-
-</div>*@
 
 @section Scripts {
-
+        <script type="text/javascript" src="/frontend/home.js?v=20230319084959"></script>
 }

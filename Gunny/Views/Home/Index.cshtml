@@ -28,13 +28,13 @@
                         <a href="javasctipt:;" alt="@item.fullname" class="c-image">
                                 @if (@item.avatar != null)
                                 {
-                                    <img src="/files/@item.avatar" alt="@item.fullname" class="img-fluid img-first  c-img_4137 lazy " style="height:300px">
-                                    <img src="/files/@item.avatar" alt="@item.fullname" class="img-fluid  img-sec lazy" style="height:300px">
+                                    <img src="/files/@item.avatar" alt="@item.fullname" class="img-fluid img-thumbnail img-first  c-img_4137 lazy ">
+                                    <img src="/files/@item.avatar" alt="@item.fullname" class="img-fluid img-thumbnail img-sec lazy">
                                 }
                                 @if (@item.avatar == null)
                                 {
-                                    <img src="/imgs/user.png" alt="@item.fullname" class="img-fluid img-first  c-img_4137 lazy " style="height:300px">
-                                    <img src="/imgs/user.png" alt="@item.fullname" class="img-fluid  img-sec lazy" style="height:300px">
+                                    <img src="/imgs/user.png" alt="@item.fullname" class="img-fluid img-thumbnail img-first  c-img_4137 lazy ">
+                                    <img src="/imgs/user.png" alt="@item.fullname" class="img-fluid img-thumbnail  img-sec lazy">
                                 }
                             </a>
                         <div class="price">
@@ -62,7 +62,6 @@
                    }
                 </div>
             </div>
-           
         </div>
     </div>
 </div>
@@ -80,11 +79,11 @@
                 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 col-item">
                     <a href="" title="@item.name" target="_blank">
                             @if (@item.avatar != null){
-                                <img src="/files/@item.avatar" alt="@item.name" class="img-responsive lazy" style="height:150px">
+                                <img src="/files/@item.avatar" alt="@item.name" class="img-responsive lazy img-fluid img-thumbnail" style="height:150px">
                 }
                             @if (@item.avatar == null)
                             {
-                                <img src="/imgs/user.png" alt="@item.name" class="img-responsive lazy" style="height:150px">
+                                <img src="/imgs/user.png" alt="@item.name" class="img-responsive lazy img-fluid img-thumbnail" style="height:150px">
                             }
                             
                             <p>@item.fullname</p>

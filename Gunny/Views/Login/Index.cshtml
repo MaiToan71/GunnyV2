@@ -5,48 +5,44 @@
     Layout = "~/Views/Shared/_Login.cshtml";
 }
 
-<link href="~/css/Login.css" rel="stylesheet" />
+
 <p class="tip"></p>
 @using (Html.BeginForm("PostLogin", "Login", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 
-<div class="cont">
-    @if (@TempData["AlerMessage"] != null)
-    {
-        <div class="alert alert-danger" role="alert" style="display: flex; justify-content: center; width: 100%; }">
-            @TempData["AlerMessage"]
-        </div>
-    }
-    <div class="form sign-in">
-        <h2>Chào mừng đến  Investment </h2>
-        <label>
-            <span>Tên đăng nhập</span>
-            @Html.TextBoxFor(m => m.Email, "", new { @class = "form-control", @placeholder = "" })
-
-        </label>
-        <label>
-            <span>Mật khẩu</span>
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "" })
-        </label>
-        <button type="submit" class="submit">Đăng nhập</button>
-        <div>
-            <a href="/dang-ky" style=" display: flex; justify-content: center;">Đăng ký</a>
-            <a href="/dang-ky-moi-mat-khau" style=" display: flex; justify-content: center;">Quên mật khẩu</a>
-        </div>
-    </div>
-  
-    <div class="sub-cont">
-        <div class="img">
-            <div class="img__text m--up">
-                <h2>Nhiều sự kiện mới!</h2>
-                <p>Đăng nhập để quản lí khoản !</p>
+    <div class="cont">
+        @if (@TempData["AlerMessage"] != null)
+        {
+            <div class="alert alert-danger" role="alert" style="display: flex; justify-content: center; width: 100%; }">
+                @TempData["AlerMessage"]
             </div>
+        }
+        <div class="form sign-in">
+            <div class="text-center mb-10">
+                <h1 class="text-dark mb-3">Chào mừng đến  Investment </h1>
+            </div>
+            <div class="fv-row mb-10">
+                <label class="form-label fs-6 fw-bolder text-dark">Tên đăng nhập</label>
+                @Html.TextBoxFor(m => m.Email, "", new { @class = "form-control", @placeholder = "" })
 
+            </div>
+            <div class="fv-row mb-10">
+                <label class="form-label fs-6 fw-bolder text-dark">
+                    Mật khẩu
+                </label>
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "" })
+            </div>
+            <div class="text-center">
+            <button type="submit" class="submit btn btn-lg btn-primary w-100 mb-5">Đăng nhập</button>
+                </div>
+            <div>
+                <a href="/dang-ky" style=" display: flex; justify-content: center;">Đăng ký</a>
+                <a href="/" style=" display: flex; justify-content: center;">Trang chủ</a>
+             @*   <a href="/dang-ky-moi-mat-khau" style=" display: flex; justify-content: center;">Quên mật khẩu</a>*@
+            </div>
         </div>
-
     </div>
-</div>
 }
 
 

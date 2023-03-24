@@ -61,30 +61,8 @@ $(document).ready(function () {
     });
 
 
-    $('.add-to-cart').click(function () {
-        if (!$(this).parent().find('.list-size').hasClass("open")) {
-            $('.list-size').removeClass('open')
-            $(this).parent().find('.list-size').addClass('open')
-            getListSize(Number($(this).attr("data-id")), $(this))
 
-        } else {
-            $('.list-size').removeClass('open')
-        }
-
-    })
-
-    if ($.cookie('userId_chamy') != undefined) {
-        $('.c-box_maccount').remove()
-        $('.dropdown-menu').addClass('menu-top')
-        $('#userId_chamy').text($.cookie('fullname_chamy'))
-        $('#mobile-user').text($.cookie('fullname_chamy'))
-        $('#mobile-user').css("display", '')
-
-    } else {
-        $('.c-box_maccount').css("display", '')
-        $('#mobile-user-dropdown').remove()
-        $('.dropdown-menu').removeClass('menu-top')
-    }
+   
     $('.c-box_search .c-call_search').click(function () {
         $(".c-box_search .search-box").toggle(400);
         $(".c-box_funs .c-box_viewCart").hide('slow');

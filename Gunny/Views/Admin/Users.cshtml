@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewData["Title"] = "Users";
+    Layout = "~/Views/Shared/_AdminGunny.cshtml";
+}
+
+@using X.PagedList.Mvc.Core
+@using X.PagedList;
+@model Gunny.Models.MemAccount
+<h1>Danh sách người chơi</h1>
+@using (Html.BeginForm("Users", "admin", FormMethod.Get))
+{
+<p>
+    <div class="input-group mb-3" style="display:flex; ">
+        @Html.TextBox("username", ViewBag.CurrentFilter as string, new { @class="form-control" ,@style="width:80%" ,@placeholder="nhập tên đăng nhập"})
+        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+    </div>
+</p>
+}
+
+<table class="table table table-bordere">
+    <tr>
+        <th style="width:5%">
+            UserId
+        </th>
+        <th style="width:35%">
+            Tên đăng nhập
+        </th>
+        <th style="width:20%">
+            Xác minh
+        </th>
+
+        <th style="width:40%">
+
+        </th>
+    </tr>
+    @foreach (var item in ViewBag.MemAccount)
+    {
+        <tr>
+            <td>
+                @item.UserId
+            </td>
+            <td>
+                @item.Email
+            </td>
+            <td>
+
+                @if (item.IsValidate == true)
+                {
+                    <span style="color: blue; font-weight:bold">Đã xác minh</span>
+                }
+                @if (item.IsValidate != true)
+                {
+                    <span style="color: red; font-weight:bold">Chưa xác minh</span>
+                }
+            </td>
+            <td style="display:flex; justify-content:end">
+                <a class="btn btn-primary" style="color:white  !important" href="/admin/users/@item.UserId">Chỉnh sửa</a>
+                <a class="btn btn-danger" style="color:white  !important" href="/admin/remove/@item.UserId">Xóa</a>
+
+            </td>
+        </tr>
+    }
+
+</table>
+
+<br />
+@Html.PagedListPager((IPagedList)ViewBag.MemAccount, page => Url.Action("Users", "admin",
+    new { page = page , username = ViewBag.searchItem }))
+<!-- Kết thúc -->

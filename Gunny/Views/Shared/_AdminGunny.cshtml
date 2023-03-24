@@ -44,16 +44,9 @@
                                 </div>
                                 <div class="content">
                                     <ul>
-                                        <li><a href="/admingunny/users">Users</a></li>
+                                        <li><a href="/admin/users">Users</a></li>
                                     </ul>
                                 </div>
-                            </div>
-                            <div class="drowBox">
-                                <div class="opener">
-                                    <a href="/admingunny/payments">Quản lý nạp/nút</a>
-                                    <i class="fas fa-plus-circle"></i>
-                                </div>
-                               
                             </div>
 
                         </div>
@@ -107,10 +100,10 @@
             $('#username-input').val($.cookie("gunny_username"))
             if ($.cookie("gunny_userid_admin") != undefined) {
                 var html = `<ptitle="Tên tài khoản" id="username" href="">${$.cookie("gunny_username_admin")}</p>
-                                    <a title="Đăng xuất" href="/AdminGunny/logout">Đăng xuất</a>`
+                                    <a title="Đăng xuất" href="/admin/logout">Đăng xuất</a>`
                 $('#login').append(html)
             } else {
-                var html = ` <a title="Đăng nhập"  href="/AdminGunny/home">Đăng nhập</a>`
+                var html = ` <a title="Đăng nhập"  href="/admin/home">Đăng nhập</a>`
                 $('#login').append(html)
             }
             const opener = document.querySelectorAll(".opener");

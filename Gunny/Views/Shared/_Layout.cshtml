@@ -84,11 +84,11 @@
                         <div id="cssmenu" class=" c-main_menu" >
                             <ul class="nav navbar-nav main-menu" style=" flex-direction: unset !important;">
                                 <li class=" level0 has_child  first-item menu-item dropdown link">
-                                    <a href="#dai-ly-noi-bat" title="SẢN PHẨM" target="_self">Đại lý nổi bật</a>
+                                    <a href="#dai-ly-noi-bat" title="" target="_self">Đại lý nổi bật</a>
                                 </li>
 
                                 <li class=" level0 has_child  first-item menu-item dropdown link" >
-                                    <a href="#danh-sach-tai-khoan" title="SẢN PHẨM" target="_self">Danh sách tài khoản</a>
+                                    <a href="#danh-sach-tai-khoan" title="" target="_self">Danh sách tài khoản</a>
                                 </li>
 
                                 <li class=" level0 has_child  first-item menu-item dropdown link-infor">
@@ -102,6 +102,40 @@
             </div>
         </div>
     </header>
+    <div  class="c-box_mmenu hidden-lg hidden-md " style="width: 100%; max-width: 70% !important; display: none;">
+        <div  class="c-box_msearch">
+            <a  href="/" title="Sixdo logo" class="" style="margin-bottom: 20px;display: inline-block;">
+                <img src="https://img.icons8.com/doodle/48/null/coins--v1.png" width="100" alt="CHAMY GABY" class="img-responsive">
+            </a>
+
+            <div  class="search-box ">
+                <form id="seach_moblie" style="display:flex">
+
+                    <input  class="form-control input_search" type="text" id="keyword_moblie" name="keyword" placeholder="Gõ từ khóa tìm kiếm">
+
+                    <button  type="submit" style="    display: block !important;  color: #ffffff;text-align: center;text-transform: uppercase; padding: 7px 10px;background: #444444;transition: ease-in-out 400ms;"><i  class="fa fa-search"></i></button>
+                </form>
+            </div>
+
+        </div>
+        <a  href="javascript:void(0)" title="close" class="c-btn_close--menu">
+            <img  src="/imgs/icon-close.png" alt="close">
+        </a>
+
+        <ul  class=" c-menu_mobile row-item ">
+            <li  class=" level0 first-item c-has_parent menu-item dropdown">
+                <div  class="c-sub sub-1 ">
+                    <a href="/ca-nhan" title="Cá nhân" class="c-item_name">Thông tin tài khoản</a>
+                </div>
+            </li>
+        </ul>
+        <div  class="c-box_maccount">
+            <a href="/dang-nhap" class="c-item_name" title="Đăng nhập">
+                Đăng nhập
+            </a>
+        </div>
+
+    </div>
     <div class="container" style="margin-top:50px">
         @RenderBody()
     </div>
