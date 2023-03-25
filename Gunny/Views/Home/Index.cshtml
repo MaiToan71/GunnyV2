@@ -25,28 +25,28 @@
                     @foreach (var item in ViewBag.TopUsers)
                     {
                     <div class="col-lg-3 col-md-4 col-sm-6 c-item col-xs-6 ">
-                        <a href="javasctipt:;" alt="@item.fullname" class="c-image">
+                        <a href="javasctipt:;" alt="@item.nickname" class="c-image">
                                 @if (@item.avatar != null)
                                 {
-                                    <img src="/files/@item.avatar" alt="@item.fullname" class="img-fluid img-thumbnail img-first  c-img_4137 lazy ">
-                                    <img src="/files/@item.avatar" alt="@item.fullname" class="img-fluid img-thumbnail img-sec lazy">
+                                    <img src="/files/@item.avatar" alt="@item.nickname" class="img-fluid img-thumbnail img-first  c-img_4137 lazy ">
+                                    <img src="/files/@item.avatar" alt="@item.nickname" class="img-fluid img-thumbnail img-sec lazy">
                                 }
                                 @if (@item.avatar == null)
                                 {
-                                    <img src="/imgs/user.png" alt="@item.fullname" class="img-fluid img-thumbnail img-first  c-img_4137 lazy ">
-                                    <img src="/imgs/user.png" alt="@item.fullname" class="img-fluid img-thumbnail  img-sec lazy">
+                                    <img src="/imgs/user.png" alt="@item.nickname" class="img-fluid img-thumbnail img-first  c-img_4137 lazy ">
+                                    <img src="/imgs/user.png" alt="@item.nickname" class="img-fluid img-thumbnail  img-sec lazy">
                                 }
                             </a>
                         <div class="price">
                             <p class="c-price">
-                                <span style="">100$</span>
+                                <span style="">100,000 VNĐ</span>
                                 <br/>
                                     <span style="">@item.count đăng ký </span>
 
                             </p>
                             <div>
                                     <div class="add-to-cart " data-username="@item.email">
-                                        <button class="btn btn-sm btn-success @item.email">Đăng ký</button>
+                                        <button class="btn btn-sm btn-success @item.email" data-username="@item.email">Đăng ký</button>
                                 </div>
                                 <div id="list-size-936" class="list-size">
                                 </div>
@@ -54,8 +54,8 @@
 
                         </div>
                         <h3 class="c-name">
-                                <a href="javasctipt:;" title="@item.fullname" class="name">
-                                    @item.fullname 
+                                <a href="javasctipt:;" title="@item.nickname" class="name">
+                                    @item.nickname
                             </a>
                         </h3>
                     </div>
@@ -86,7 +86,7 @@
                                 <img src="/imgs/user.png" alt="@item.name" class="img-responsive lazy img-fluid img-thumbnail" style="height:150px">
                             }
                             
-                            <p>@item.fullname</p>
+                            <p>@item.nickname</p>
                     </a>
 
                 </div>
@@ -129,5 +129,5 @@
 </div>
 
 @section Scripts {
-    <script type="text/javascript" src="/frontend/home.js?v=20230319084959"></script>
+    <script type="text/javascript" src="/frontend/home.js?v=@DateTime.Now.ToString("yyyyMMddhhmmss")"></script>
 }

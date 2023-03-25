@@ -1,6 +1,5 @@
-﻿@model Gunny.Models.MemAccount
-@{
-    ViewData["Title"] = "Thông tin tài khoản cấp 2";
+﻿@{
+    ViewData["Title"] = "Lịch sử nạp/rut";
     Layout = "~/Views/Shared/_AccountAdmin.cshtml";
 }
 @using X.PagedList.Mvc.Core
@@ -8,42 +7,50 @@
 <div class="col-md-12">
     <div class="card card-xl-stretch mb-5 mb-xl-12">
         <div class="card-body py-3 row">
-            @if (ViewBag.ListUsers != null)
+            @if (ViewBag.Histories != null)
             {
-                @if (ViewBag.ListUsers.Count != 0)
+                @if (ViewBag.Histories.Count != 0)
                 {
                     <table class="table align-middle table-row-dashed fs-6 gy-5">
                         <thead>
                             <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
-                                <th scope="col" class="min-w-125px sorting text-dark">Biệt danh</th>
-                                <th scope="col" class="min-w-125px sorting text-dark">Họ và tên</th>
-                                <th scope="col" class="min-w-125px sorting text-dark">Avartar</th>
+                                <th scope="col" class="min-w-125px sorting text-dark">Trạng thái</th>
+                                <th scope="col" class="min-w-125px sorting text-dark">Hành động</th>
+                                <th scope="col" class="min-w-125px sorting text-dark">Ngày gửi</th>
+                                <th scope="col" class="min-w-125px sorting text-dark">Nội dung</th>
+                                <th scope="col" class="min-w-125px sorting text-dark">Số tiền</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in ViewBag.ListUsers)
+                            @foreach (var item in ViewBag.Histories)
                             {
                                 <tr>
-                                    <td>@item.Nickname</td>
-                                    <td>@item.Fullname</td>
-                                   
-                                    <td><img height="50" width="50" src="/files/@item.Avatar" /></td>
-                                   
+                                    <th>
+                                        @if (@item.IsRead == null || @item.IsRead == false)
+                                        {
+                                            <p style="color:red">Đang chờ duyệt</p>
+                                        }
+                                        @if (@item.IsRead == true)
+                                        {
+                                            <p style="color:blue">Đã duyệt</p>
+                                        }
+                                    </th>
+                                    <td>@item.Type</td>
+                                    <td class="datetime">@item.TimeCreate</td>
+                                    <td>@Html.Raw(@item.Content)</td>
+                                    <td class="moneys">@item.Value</td>
+
                                 </tr>
                             }
                         </tbody>
                     </table>
-                    @Html.PagedListPager((IPagedList)ViewBag.ListUsers, page => Url.Action("ListUser", "Account",
+                    @Html.PagedListPager((IPagedList)ViewBag.Histories, page => Url.Action("ListUser", "Account",
             new { page = page }))
                 }
-                @if (ViewBag.ListUsers.Count == 0)
-                {
-                    <p>Bạn chưa có tài khoản cấp dưới</p>
-                }
             }
-            @if (ViewBag.ListUsers == null)
+            @if (ViewBag.Histories.Count == 0)
             {
-                        <p>Bạn chưa có tài khoản cấp dưới</p>
+                <p>Bạn chưa có yêu cầu</p>
             }
         </div>
     </div>

@@ -31,15 +31,30 @@ namespace Gunny.APIs
         [HttpPost]
         public dynamic PostPresenter(string email, string presenter)
         {
-            var result = _context.MemAccounts.FirstOrDefault(m => m.Email == email);
-            if(result != null)
+            var parent= _context.MemAccounts.FirstOrDefault(m => m.Email == presenter);
+            if(parent == null)
             {
-                result.Presenter= presenter;
-                _context.SaveChanges();
-                return true;
+                return false;
+            }
+            var child = _context.MemAccounts.FirstOrDefault(m => m.Email == email);
+            if(child == null)
+            {
+               
+                return false;
             };
-           
-            return false;
+            child.Presenter = presenter;
+            
+            child.TypeF = parent.TypeF+1;
+            if (child.TypeF == 1)
+            {
+                child.EmailF0 = presenter;
+            }
+            else
+            {
+                child.EmailF0 = parent.EmailF0;
+            }
+            _context.SaveChanges();
+            return true;
         }
         [Route("top")]
         public dynamic GetTopUsers()
@@ -49,6 +64,7 @@ namespace Gunny.APIs
                 x.Email,
                 x.Fullname,
                x.Avatar,
+               x.Nickname,
                 Count = _context.MemAccounts.Where(m => m.Presenter == x.Email).Count(),
             }).OrderByDescending( x=>x.Count).Skip((1 - 1) * 8).Take(8).ToList();
             return result;
@@ -62,6 +78,7 @@ namespace Gunny.APIs
                 x.Email,
                 x.Fullname,
                 x.Avatar,
+                x.Nickname,
             }).OrderByDescending(x => x.Email).Skip((page - 1) * 30).Take(20).ToList();
             return new
             {
@@ -74,13 +91,14 @@ namespace Gunny.APIs
         public dynamic GetAll(int page, string search)
         {
             var result = _context.MemAccounts
-                .Where(m => m.Email.Contains(search) || m.Fullname.Contains(search))
+                .Where(m => m.Email.Contains(search) || m.Fullname.Contains(search) || m.Nickname.Contains(search))
                 .Select(x => new
             {
                 x.Email,
                 x.Fullname,
                 x.Avatar,
-            }).OrderByDescending(x => x.Email).Skip((page - 1) * 20).Take(20).ToList();
+                    x.Nickname,
+                }).OrderByDescending(x => x.Email).Skip((page - 1) * 20).Take(20).ToList();
             return new
             {
                 Result = result,

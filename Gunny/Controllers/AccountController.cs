@@ -19,7 +19,6 @@ namespace Gunny.Controllers
             option.Expires = DateTime.Now.AddHours(expireTime.Value);
             Response.Cookies.Append(key, value, option);
         }
-
         private string GetUniqueFileName(string fileName)
         {
             fileName = Path.GetFileName(fileName);
@@ -27,15 +26,11 @@ namespace Gunny.Controllers
                       + "_"
                       + Guid.NewGuid().ToString().Substring(0, 4);
         }
-
-
-
         private readonly Member_GMPContext _context;
         public AccountController(Member_GMPContext context)
         {
             _context = context;
         }
-
         [Route("thong-tin-tai-khoan")]
         public IActionResult Index()
         {
@@ -69,6 +64,9 @@ namespace Gunny.Controllers
                     IsValidate = user.IsValidate,
                     AvatarName = user.Avatar,
                     Presenter = user.Presenter,
+                    Nickname = user.Nickname,
+                    TotalMoney = user.TotalMoney,
+
                 };
                 return View(memAccount);
             }
@@ -113,8 +111,6 @@ namespace Gunny.Controllers
                 return View();
             }
         }
-
-
         public static string CreateName(int length)
         {
             const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -126,7 +122,6 @@ namespace Gunny.Controllers
             }
             return res.ToString();
         }
-
         [HttpPost]
         public async Task<IActionResult> EditMemAccount(Models.InformationMemAccount.User memAccount)
         {
@@ -151,7 +146,7 @@ namespace Gunny.Controllers
                     }
                     if (memAccount.Email == null || memAccount.Fullname == null || memAccount.Phone == null ||
                         memAccount.BankNumber == null || memAccount.BankName == null || memAccount.Cmndnumber == null ||
-                        memAccount.MemEmail == null)
+                        memAccount.MemEmail == null || memAccount.Nickname == null || memAccount.CMNDName == null)
                     {
                         TempData["AlerMessageError"] = "Hãy điền đầy đủ thông tin";
                         return Redirect("/thong-tin-tai-khoan");
@@ -255,11 +250,12 @@ namespace Gunny.Controllers
                     user.Cmndnumber = memAccount.Cmndnumber;
                     user.BankUserName = memAccount.BankUserName;
                     user.MemEmail = memAccount.MemEmail;
-                    user.IsValidate = true;
+                    user.IsValidate = 1;
                     user.Cmndpath1 = CmndpathName1;
                     user.Cmndpath2 = CmndpathName2;
                     user.Avatar = avartar;
-                    //user.Presenter = memAccount.Presenter;
+                    user.CMNDName = memAccount.CMNDName;
+                    user.Nickname = memAccount.Nickname;
 
                     _context.SaveChanges();
                     TempData["AlerMessageSuccess"] = "Bạn đã cập nhật thông tin";

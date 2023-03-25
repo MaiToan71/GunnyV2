@@ -45,11 +45,11 @@
             </td>
             <td>
 
-                @if (item.IsValidate == true)
+                @if (item.IsValidate == 2)
                 {
                     <span style="color: blue; font-weight:bold">Đã xác minh</span>
                 }
-                @if (item.IsValidate != true)
+                @if (item.IsValidate != 1)
                 {
                     <span style="color: red; font-weight:bold">Chưa xác minh</span>
                 }

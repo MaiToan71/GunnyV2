@@ -141,11 +141,15 @@
                 <img src="/files/@Model.AvatarName" id="fileAvatar-img" style="width:100px" />
             </div>
         </div>
-    @if (@Model.IsValidate == true)
+        @if (@Model.IsValidate == 1)
+        {
+            <p style="color:blue; font-weight:bold">Tài khoản đã được xác minh</p>
+        }
+    @if (@Model.IsValidate == 1)
     {
-    <p style="color:blue; font-weight:bold">Tài khoản đã được xác minh</p>
+    <p style="color:blue; font-weight:bold">Tài khoản chờ xác minh xác minh</p>
     }
-    @if (@Model.IsValidate == false || @Model.IsValidate == null)
+    @if (@Model.IsValidate == 0 || @Model.IsValidate == null)
     {
     <p style="color:red">Tài khoản chưa được xác minh</p>
     }

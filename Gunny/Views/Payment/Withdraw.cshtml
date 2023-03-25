@@ -3,81 +3,63 @@
     ViewData["Title"] = "Thông tin rút tiền";
     Layout = "~/Views/Shared/_AccountAdmin.cshtml";
 }
-<h1>Thông tin gửi email xác nhận rút tiền</h1>
-<table class="table table-bordered " style="margin-top:20px;">
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Rút xu</th>
-            <th scope="col">Số tiền</th>
-
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td>100 xu</td>
-            <td>90,000 vnđ</td>
-        </tr>
-        <tr>
-            <th scope="row">2</th>
-            <td>1,000 xu</td>
-            <td> 900,000 vnđ</td>
-        </tr>
-        <tr>
-            <th scope="row">3</th>
-            <td> 10,000 xu</td>
-            <td>9,00,000 vnđ</td>
-        </tr>
-    </tbody>
-</table>
-@using (Html.BeginForm("PostWithdraw", "Payment", FormMethod.Post, new { @enctype = "multipart/form-data" }))
-{
-    @Html.AntiForgeryToken()
-    @if (@TempData["AlerMessageSuccess"] != null)
-    {
-        <div class="alert alert-success" role="alert" style="display: flex; justify-content: center; width: 100%; }">
-            @TempData["AlerMessageSuccess"]
-        </div>
+<style>
+    .row {
+        margin-bottom: 15px;
     }
-    @if (@TempData["AlerMessageError"] != null)
-    {
-        <div class="alert alert-danger" role="alert" style="display: flex; justify-content: center; width: 100%; }">
-            @TempData["AlerMessageError"]
-        </div>
-    }
+</style>
+<div class="col-md-12">
+    <div class="card card-xl-stretch mb-5 mb-xl-12">
+        <div class="card-body py-3 row">
+            @using (Html.BeginForm("PostWithdraw", "Payment", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                @if (@TempData["AlerMessageSuccess"] != null)
+                {
+                    <div class="alert alert-success" role="alert" style="display: flex; justify-content: center; width: 100%; }">
+                        @TempData["AlerMessageSuccess"]
+                    </div>
+                }
+                @if (@TempData["AlerMessageError"] != null)
+                {
+                    <div class="alert alert-danger" role="alert" style="display: flex; justify-content: center; width: 100%; }">
+                        @TempData["AlerMessageError"]
+                    </div>
+                }
+                <h1>Gửi thông tin gửi xác rút tiền </h1>
+                <hr />
+                <div class="row">
+                    <div class="col-md-3 gunny-text">
+                        Tài khoản đăng nhập
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @disabled = "disabled" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 gunny-text">
+                        Số tiền rút
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(m => m.NumberOfMoney, new {@type = "number", @class = "form-control", @placeholder = "100000" })
+                    </div>
+                    <div class="col-md-3" style="color:red">Tối thiểu: 100 000VNĐ </div>
+                </div>
 
-    <div class="row">
-        <div class="col-md-3 gunny-text">
-            Tài khoản đăng nhập
-        </div>
-        <div class="col-md-6">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @disabled = "disabled" })
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3 gunny-text">
-            Số tiền rút
-        </div>
-        <div class="col-md-6">
-            @Html.TextBoxFor(m => m.NumberOfMoney, new { @class = "form-control", @placeholder = "100 000 vnđ" })
-        </div>
-        <div class="col-md-3" style="color:red">Tối thiểu: 100xu </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-3 gunny-text">
-            Nội dung ghi chú
-        </div>
-        <div class="col-md-6">
-            @Html.TextAreaFor(m => m.Note, new { @rows = 8, @class = "form-control", @placeholder = "Nội dung chuyển khoản ghi rõ tên đăng nhập, số tiền rút" })
-        </div>
-        <div class="col-md-3" style="color:red">
-            
+                <div class="row">
+                    <div class="col-md-3 gunny-text">
+                        Nội dung ghi chú
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TextAreaFor(m => m.Note, new { @rows = 8, @class = "form-control", @placeholder = "Tên đăng nhập" })
+                    </div>
+                    <div class="col-md-3" style="color:red">
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center " style="margin-top:10px; margin-bottom:10px">
+                    <button type="submit" class="btn btn-primary  ">Gửi thông tin</button>
+                </div>
+            }
         </div>
     </div>
-    <div class="d-flex justify-content-center " style="margin-top:10px; margin-bottom:10px">
-        <button type="submit" class="btn btn-primary  ">Gửi thông tin</button>
-    </div>
-
-}
+</div>

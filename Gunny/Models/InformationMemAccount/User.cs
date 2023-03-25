@@ -22,8 +22,11 @@ namespace Gunny.Models.InformationMemAccount
         public string BankName { get; set; }
         public string Cmndnumber { get; set; }
         public string BankUserName { get; set; }
-        public bool? IsValidate { get; set; }
+        public int? IsValidate { get; set; }
         public string MemEmail { get; set; }
         public string Presenter { get; set; }
+        public string Nickname { get; set; }
+        public string CMNDName { get; set; }
+        public int TotalMoney { get; set; }
     }
 }

@@ -4,54 +4,60 @@
     Layout = "~/Views/Shared/_AccountAdmin.cshtml";
 }
 <style>
-    .row{
-        margin-bottom:30px;
+    .row {
+        margin-bottom: 15px;
     }
 </style>
-<h1>Đổi mật khẩu với mật khẩu cũ</h1>
-<hr />
-@using (Html.BeginForm("Change", "ChangePassword", FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
-    @if (@TempData["AlerMessageSuccess"] != null)
-    {
-        <div class="alert alert-success" role="alert" style="display: flex; justify-content: center; width: 100%; }">
-            @TempData["AlerMessageSuccess"]
-        </div>
-    }
-    @if (@TempData["AlerMessageError"] != null)
-    {
-        <div class="alert alert-danger" role="alert" style="display: flex; justify-content: center; width: 100%; }">
-            @TempData["AlerMessageError"]
-        </div>
-    }
-    <div class="row">
-        <div class="col-md-4 gunny-text">
-            Mật khẩu cũ
-        </div>
-        <div class="col-md-6">
-            @Html.PasswordFor(m => m.OldPassword, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4 gunny-text">
-            Nhập mật khẩu mới
-        </div>
-        <div class="col-md-6">
-            @Html.PasswordFor(m => m.NewPassword, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4 gunny-text">
-            Xác nhận mật khẩu mới
-        </div>
-        <div class="col-md-6">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-        </div>
-    </div>
+<div class="col-md-12">
+    <div class="card card-xl-stretch mb-5 mb-xl-12">
+        <div class="card-body py-3 row">
+            <h1>Đổi mật khẩu với mật khẩu cũ</h1>
+            <hr />
+            @using (Html.BeginForm("Change", "ChangePassword", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @if (@TempData["AlerMessageSuccess"] != null)
+                {
+                    <div class="alert alert-success" role="alert" style="display: flex; justify-content: center; width: 100%; }">
+                        @TempData["AlerMessageSuccess"]
+                    </div>
+                }
+                @if (@TempData["AlerMessageError"] != null)
+                {
+                    <div class="alert alert-danger" role="alert" style="display: flex; justify-content: center; width: 100%; }">
+                        @TempData["AlerMessageError"]
+                    </div>
+                }
+                <div class="row">
+                    <div class="col-md-4 gunny-text">
+                        Mật khẩu cũ
+                    </div>
+                    <div class="col-md-6">
+                        @Html.PasswordFor(m => m.OldPassword, new { @class = "form-control" ,@placeholder="Nhập mật khẩu cũ" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 gunny-text">
+                        Nhập mật khẩu mới
+                    </div>
+                    <div class="col-md-6">
+                        @Html.PasswordFor(m => m.NewPassword, new { @class = "form-control" ,@placeholder="Nhập mật khẩu mới" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 gunny-text">
+                        Xác nhận mật khẩu mới
+                    </div>
+                    <div class="col-md-6">
+                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" ,@placeholder="Nhập lại mật khẩu mới" })
+                    </div>
+                </div>
 
-    <div class="d-flex justify-content-center " style="margin-top:10px; margin-bottom:10px">
-        <button type="submit" class="btn btn-primary ">Cập nhật </button>
-    </div>
-}
+                <div class="d-flex justify-content-center " style="margin-top:10px; margin-bottom:10px">
+                    <button type="submit" class="btn btn-primary ">Cập nhật </button>
+                </div>
+            }
 
+        </div>
+    </div>
+</div>

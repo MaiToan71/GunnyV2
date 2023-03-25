@@ -9,24 +9,140 @@
     }
 </style>
 
-@if (ViewBag.userAgency != null)
-{
+
+
+<div class="row">
+
     <div class="col-md-3">
-        <div class="card card-xl-stretch mb-5 mb-xl-12">
-            <div class="card-body py-3 row">
-                <div class="row account">
-                    <div class="col-md-5">Tên đại lý</div>
-                    <div class="col-md-7">@ViewBag.userAgency.Fullname</div>
+        <h2>Người giới thiệu</h2>
+        <div class="card card-xl-stretch mb-5 mb-xl-12 ">
+            <div class="card-body py-3 row ">
+                <div class="sc-lbtWl dJNYKT avatar-wrap" style="display: flex;
+                        width: 100%;
+                        justify-content: center;
+                        align-items: center;">
+                 @if (ViewBag.userAgency != null)
+                    {
+                        <img height="50" src="/files/@ViewBag.userAgency.Avatar" class="sc-fIzWTo SOFm avatar">
+                    }
+                     @if (ViewBag.userAgency == null)
+                    {
+                        <img height="50" src="/imgs/user.png" class="sc-fIzWTo SOFm avatar">
+                    }
                 </div>
-                     <div class="row account">
-                    <div class="col-md-5">Số điện thoại</div>
-                    <div class="col-md-7">@ViewBag.userAgency.Phone</div>
-                </div>
-                     <div class="row account">
-                <div class="col-md-5">Email</div>
-                    <div class="col-md-7">@ViewBag.userAgency.MemEmail</div>
-            </div>
+                 @if (ViewBag.userAgency != null)
+                    {
+                <p style="text-align:center; font-weight:bold;margin-top:10px">
+                        @ViewBag.userAgency.Nickname
+                </p>
+                }
+                @if (ViewBag.userAgency == null)
+                {
+                    <p style="text-align:center; font-weight:bold;margin-top:10px;color:red">
+                        Chưa có
+                    </p>
+                }
             </div>
         </div>
     </div>
-}
+
+    <div class="col-md-3">
+        <h2>Tài khoản đăng ký</h2>
+        <div class="card card-xl-stretch mb-5 mb-xl-12">
+            <div class="card-body py-3 row">
+                <div class="sc-lbtWl dJNYKT avatar-wrap" style="display: flex;
+                        width: 100%;
+                        justify-content: center;
+                        align-items: center;">
+                    <img height="50" src="/imgs/icons8-total-sales-100.png" class="sc-fIzWTo SOFm avatar">
+                </div>
+                <p style="text-align:center; font-weight:bold;margin-top:10px">@ViewBag.Count</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <h2>Hoa hồng</h2>
+        <div class="card card-xl-stretch mb-5 mb-xl-12">
+            <div class="card-body py-3 row">
+                <div class="sc-lbtWl dJNYKT avatar-wrap" style="display: flex;
+                        width: 100%;
+                        justify-content: center;
+                        align-items: center;">
+                    <img height="50" src="/imgs/coins--v1.png" class="sc-fIzWTo SOFm avatar">
+                </div>
+                <p style="text-align:center; font-weight:bold;margin-top:10px" class="moneys">20</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <h2>Tổng tiền</h2>
+        <div class="card card-xl-stretch mb-5 mb-xl-12">
+            <div class="card-body py-3 row">
+                <div class="sc-lbtWl dJNYKT avatar-wrap" style="display: flex;
+                        width: 100%;
+                        justify-content: center;
+                        align-items: center;">
+                    <img height="50" src="/imgs/coins--v1.png" class="sc-fIzWTo SOFm avatar">
+                </div>
+                <p style="text-align:center; font-weight:bold;margin-top:10px" class="moneys">@Model.TotalMoney</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h2>Thông tin hồ sơ</h2>
+        <div class="card card-xl-stretch mb-5 mb-xl-12">
+            <div class="card-body py-3 row">
+                <div class="row account">
+                    <div class="col-md-6">Tên đăng nhập</div>
+                    <div class="col-md-6">@Model.Email</div>
+                </div>
+                <div class="row account">
+                    <div class="col-md-6">Biệt danh</div>
+                    <div class="col-md-6">@Model.Nickname</div>
+                </div>
+                <div class="row account">
+                    <div class="col-md-6">Họ và tên</div>
+                    <div class="col-md-6">@Model.Fullname</div>
+                </div>
+                <div class="row account">
+                    <div class="col-md-6">Số điện thoại</div>
+                    <div class="col-md-6">@Model.Phone</div>
+                </div>
+                <div class="row account">
+                    <div class="col-md-6">Email</div>
+                    <div class="col-md-6">@Model.Email</div>
+                </div>
+                <div class="row account">
+                    <div class="col-md-6">Avatar</div>
+                    <div class="col-md-6">
+                        <img src="/files/@Model.AvatarName" height="50">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h2>Thông tin ngân ngân hàng</h2>
+        <div class="card card-xl-stretch mb-5 mb-xl-12">
+            <div class="card-body py-3 row">
+                <div class="row account">
+                    <div class="col-md-6">Ngân hàng hưởng thụ</div>
+                    <div class="col-md-6">@Model.BankName</div>
+                </div>
+                <div class="row account">
+                    <div class="col-md-6">Số tài khoản ngân hàng</div>
+                    <div class="col-md-6">@Model.BankNumber</div>
+                </div>
+                <div class="row account">
+                    <div class="col-md-6">Họ và tên</div>
+                    <div class="col-md-6">@Model.BankUserName</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

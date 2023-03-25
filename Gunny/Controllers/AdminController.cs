@@ -345,7 +345,7 @@ namespace Gunny.Controllers
                         user.Cmndnumber = memAccount.Cmndnumber;
                         user.BankUserName = memAccount.BankUserName;
                         user.MemEmail = memAccount.MemEmail;
-                        user.IsValidate = true;
+                        user.IsValidate = 2;
                         user.Cmndpath1 = CmndpathName1;
                         user.Cmndpath2 = CmndpathName2;
                     user.Avatar = avartar;

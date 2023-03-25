@@ -183,3 +183,14 @@
     margin-bottom: 0; } }
 
 /*# sourceMappingURL=home.css.map */
+.products_2 .img-fluid {
+    height: 350px !important;
+    width: 100% !important;
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+    .products_2 .img-fluid {
+        height: 160px !important;
+    }
+}

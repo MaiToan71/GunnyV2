@@ -224,7 +224,8 @@ namespace Gunny.Controllers
                     Ipcreate = ipx.ToString(),
                     AllowSocialLogin = true,
                     TimeCreate = unchecked((int)time),
-                    Password2 = GetMD5(userRegister.Password2)
+                    Password2 = GetMD5(userRegister.Password2),
+                    TypeF=0
                 };
                 _context.MemAccounts.Add(user);
                 _context.SaveChanges();

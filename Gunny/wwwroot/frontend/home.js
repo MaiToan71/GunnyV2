@@ -29,6 +29,8 @@ $(document).ready(function () {
 })
 
 function UpdatePresenter(email, presenter) {
+    console.log(email)
+    console.log(presenter)
     $.ajax({
         method: "Post",
         url: `/api/user/${email}/${presenter}`,

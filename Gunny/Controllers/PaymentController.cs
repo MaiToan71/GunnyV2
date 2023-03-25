@@ -3,12 +3,14 @@ using Gunny.Models;
 using Gunny.Models.SendMail;
 using MailKit.Security;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace Gunny.Controllers
 {
@@ -20,7 +22,7 @@ namespace Gunny.Controllers
         {
             _context = context;
         }
-        [Route("nap-the")]
+        [Route("nap-tai-khoan")]
         public IActionResult Index()
         {
             string cookieValueFromReq = Request.Cookies["gunny_userid"];
@@ -40,7 +42,7 @@ namespace Gunny.Controllers
                 var memAccount = new Gunny.Models.SendMail.Payment
                 {
                     Email = user.Email,
-                    NumberOfMoney ="",
+                    NumberOfMoney =0,
                     Note="",
                 };
                 return View(memAccount);
@@ -96,12 +98,12 @@ namespace Gunny.Controllers
             if (payment.NumberOfMoney == null || payment.Note == null )
             {
                 TempData["AlerMessageError"] = "Không được để trống thông tin gửi";
-                return Redirect("/nap-the");
+                return Redirect("/nap-tai-khoan");
             }
             if(user.Email == null)
             {
                 TempData["AlerMessageError"] = "Bạn chưa xác minh email";
-                return Redirect("/nap-the");
+                return Redirect("/nap-tai-khoan");
             }
            
                 var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
@@ -110,10 +112,10 @@ namespace Gunny.Controllers
                     To = config["MailSettingsAdmin:Mail"],
                     Subject = "Thông tin nạp thẻ tài khoản : " + user.Email,
                     Body = $@" <p>Email/Tài khoản: {user.Email}</p>
-                            <p>Số tiền cần nạp: {payment.NumberOfMoney}</p>
+                            <p>Số tiền cần nạp: <span class='moneys'>{payment.NumberOfMoney}</span></p>
                             <p>Thông tin ghi chú: {payment.Note} </p>"
                 };
-                _ = SendMail(content);
+              /*  _ = SendMail(content);*/
                 var time = DateTimeOffset.Now.ToUnixTimeSeconds();
                 var hostName = System.Net.Dns.GetHostName();
                 var ips = await System.Net.Dns.GetHostAddressesAsync(hostName);
@@ -135,11 +137,12 @@ namespace Gunny.Controllers
                     Content = content.Body,
                     TimeCreate = unchecked((int)time),
                     Ipcreate = ipx.ToString(),
+                    Value = (int)payment.NumberOfMoney,
                 };
                 _context.MemHistories.Add(memHistory);
                 _context.SaveChanges();
-                TempData["AlerMessageSuccess"] = "Bạn đã gửi thông tin Email đến Admin";
-                return Redirect("/nap-the");
+                TempData["AlerMessageSuccess"] = "Bạn đã gửi thông tin đến Admin";
+                return Redirect("/nap-tai-khoan");
            
         }
 
@@ -163,7 +166,7 @@ namespace Gunny.Controllers
                 var memAccount = new Gunny.Models.SendMail.Payment
                 {
                     Email = user.Email,
-                    NumberOfMoney = "",
+                    NumberOfMoney = 0,
                     Note = "",
                 };
                 return View(memAccount);
@@ -178,12 +181,12 @@ namespace Gunny.Controllers
             if (payment.NumberOfMoney == null || payment.Note == null)
             {
                 TempData["AlerMessageError"] = "Không được để trống thông tin gửi";
-                return Redirect("/nap-the");
+                return Redirect("/nap-tai-khoan");
             }
             if (user.Email == null)
             {
                 TempData["AlerMessageError"] = "Bạn chưa xác minh email";
-                return Redirect("/nap-the");
+                return Redirect("/nap-tai-khoan");
             }
            
                 var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
@@ -192,10 +195,10 @@ namespace Gunny.Controllers
                     To = config["MailSettingsAdmin:Mail"],
                     Subject = "Thông tin rút tiền tài khoản :" + user.Email,
                     Body = $@" <p>Tài khoản: {user.Email}</p>
-                            <p>Số tiền rút: {payment.NumberOfMoney}</p>
+                            <p>Số tiền cần nạp: <span class='moneys'>{payment.NumberOfMoney}</span></p>
                             <p>Thông tin ghi chú: {payment.Note} </p>"
                 };
-                _ = SendMail(content);
+             /*   _ = SendMail(content);*/
                 var time = DateTimeOffset.Now.ToUnixTimeSeconds();
                 var hostName = System.Net.Dns.GetHostName();
                 var ips = await System.Net.Dns.GetHostAddressesAsync(hostName);
@@ -215,16 +218,51 @@ namespace Gunny.Controllers
                     Type = "Rút tiền",
                     TypeCode = 2,
                     Content = content.Body,
+                    Value= (int)payment.NumberOfMoney,
                     TimeCreate = unchecked((int)time),
                     Ipcreate = ipx.ToString(),
                 };
                 _context.MemHistories.Add(memHistory);
                 _context.SaveChanges();
-                TempData["AlerMessageSuccess"] = "Bạn đã gửi thông tin Email đến Admin";
+                TempData["AlerMessageSuccess"] = "Bạn đã gửi thông tin đến Admin";
                 return Redirect("/rut-tien");
             
         }
 
+        [Route("lich-su-nap-rut")]
+        public IActionResult UserHistory(int? page)
+        {
+            string cookieValueFromReq = Request.Cookies["gunny_userid"];
+            if (cookieValueFromReq == null)
+            {
+
+                return Redirect("/dang-nhap");
+            }
+            else
+            {
+                int userid = Int32.Parse(cookieValueFromReq);
+                // 1. Tham số int? dùng để thể hiện null và kiểu int
+                // page có thể có giá trị là null và kiểu int.
+
+                // 2. Nếu page = null thì đặt lại là 1.
+                if (page == null) page = 1;
+
+                // 3. Tạo truy vấn, lưu ý phải sắp xếp theo trường nào đó, ví dụ OrderBy
+                // theo LinkID mới có thể phân trang.
+                var links = _context.MemHistories.Where(m => m.UserId == userid);
+
+                // 4. Tạo kích thước trang (pageSize) hay là số Link hiển thị trên 1 trang
+                int pageSize = 10;
+
+                // 4.1 Toán tử ?? trong C# mô tả nếu page khác null thì lấy giá trị page, còn
+                // nếu page = null thì lấy giá trị 1 cho biến pageNumber.
+                int pageNumber = (page ?? 1);
+
+                // 5. Trả về các Link được phân trang theo kích thước và số trang.
+                ViewBag.Histories = links.OrderByDescending(m => m.TimeCreate).ToPagedList(pageNumber, pageSize);
+                return View();
+            }
+        }
 
     }
 }

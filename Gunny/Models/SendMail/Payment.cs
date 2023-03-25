@@ -8,7 +8,7 @@ namespace Gunny.Models.SendMail
     public class Payment
     {
         public string Email { set; get; }
-        public string NumberOfMoney { get; set; }
+        public int NumberOfMoney { get; set; }
         public string Note { get; set; }
     }
 }

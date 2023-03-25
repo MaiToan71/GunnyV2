@@ -28,7 +28,7 @@ namespace Gunny.Models
         public string BankNumber { get; set; }
         public string BankName { get; set; }
         public string Cmndnumber { get; set; }
-        public bool? IsValidate { get; set; }
+        public int? IsValidate { get; set; }
         public string BankUserName { get; set; }
         public string Cmndpath2 { get; set; }
         public string MemEmail { get; set; }
@@ -38,5 +38,9 @@ namespace Gunny.Models
         public string ParentId { get; set; }
         public string Presenter { get; set; }
         public string Avatar { get; set; }
+        public string Nickname { get; set; }
+        public string CMNDName { get; set; }
+        public int? TypeF { get; set; }
+        public string EmailF0 { get; set; }
     }
 }

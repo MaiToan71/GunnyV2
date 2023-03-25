@@ -17,17 +17,17 @@
     <meta property="og:image:width" content="320">
     <meta property="og:image:height" content="180">
     <link rel="shortcut icon" href="/icons8-coins-48.png" />
-    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/megamenu.css?v=20230319084959" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/megamenu.css?v=@DateTime.Now.ToString("yyyyMMddhhmmss")" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/style.css?v=20230319084959" />
-    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/home/home.css?v=20230319084959" />
-    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/home/style.css?v=20230319084959" />
-    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/home/font-awesome.css?v=20230319084959" />
-    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/home/shopcart.css?v=20230319084959" />
-    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/home/default.css?v=20230319084959" />
-    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/home/owl.carousel.min.css?v=20230319084959" />
-    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/home/owl.theme.default.min.css?v=20230319084959" />
-    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/home/popup.css?v=20230319084959" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/style.css?v=@DateTime.Now.ToString("yyyyMMddhhmmss")" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/home/home.css?v=@DateTime.Now.ToString("yyyyMMddhhmmss")" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/home/style.css?v=@DateTime.Now.ToString("yyyyMMddhhmmss")" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/home/font-awesome.css?v=@DateTime.Now.ToString("yyyyMMddhhmmss")" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/home/shopcart.css?v=@DateTime.Now.ToString("yyyyMMddhhmmss")" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/home/default.css?v=@DateTime.Now.ToString("yyyyMMddhhmmss")" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/home/owl.carousel.min.css?v=@DateTime.Now.ToString("yyyyMMddhhmmss")" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/home/owl.theme.default.min.css?v=@DateTime.Now.ToString("yyyyMMddhhmmss")" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/frontend/css/home/popup.css?v=@DateTime.Now.ToString("yyyyMMddhhmmss")" />
     <style>
         .error {
             color: red;
@@ -83,14 +83,14 @@
                         </div>
                         <div id="cssmenu" class=" c-main_menu" >
                             <ul class="nav navbar-nav main-menu" style=" flex-direction: unset !important;">
-                                <li class=" level0 has_child  first-item menu-item dropdown link">
+                              @*  <li class=" level0 has_child  first-item menu-item dropdown link">
                                     <a href="#dai-ly-noi-bat" title="" target="_self">Đại lý nổi bật</a>
                                 </li>
 
                                 <li class=" level0 has_child  first-item menu-item dropdown link" >
                                     <a href="#danh-sach-tai-khoan" title="" target="_self">Danh sách tài khoản</a>
                                 </li>
-
+*@
                                 <li class=" level0 has_child  first-item menu-item dropdown link-infor">
                                     <a href="/ca-nhan" title="Cá nhân" target="_self">Thông tin tài khoản</a>
                                 </li>
@@ -182,15 +182,15 @@
 
     <script type="text/javascript" src="/frontend/bootstrap.min.js?v=1.25"></script>
 
-    <script type="text/javascript" src="/frontend/js/home/form1.js?v=20230319084959"></script>
+    <script type="text/javascript" src="/frontend/js/home/form1.js?v=@DateTime.Now.ToString("yyyyMMddhhmmss")"></script>
 
-    <script type="text/javascript" src="/frontend/js/home/js_templates.js?v=20230319084959"></script>
-    <script type="text/javascript" src="/frontend/js/home/search.js?v=20230319084959"></script>
+    <script type="text/javascript" src="/frontend/js/home/js_templates.js?v=@DateTime.Now.ToString("yyyyMMddhhmmss")"></script>
+    <script type="text/javascript" src="/frontend/js/home/search.js?v=@DateTime.Now.ToString("yyyyMMddhhmmss")"></script>
 
-    <script type="text/javascript" src="/frontend/js/home/owl.carousel.min.js?v=20230319084959"></script>
-    <script type="text/javascript" src="/frontend/js/home/home.js?v=20230319084959"></script>
+    <script type="text/javascript" src="/frontend/js/home/owl.carousel.min.js?v=@DateTime.Now.ToString("yyyyMMddhhmmss")"></script>
+    <script type="text/javascript" src="/frontend/js/home/home.js?v=@DateTime.Now.ToString("yyyyMMddhhmmss")"></script>
 
-    <script type="text/javascript" src="/frontend/js/home/default.js?v=20230319084959"></script>
+    <script type="text/javascript" src="/frontend/js/home/default.js?v=@DateTime.Now.ToString("yyyyMMddhhmmss")"></script>
     <script>
         $(document).ready(function () {
             $('.link-infor').css('display','none')

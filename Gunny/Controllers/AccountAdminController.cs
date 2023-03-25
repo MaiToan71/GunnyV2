@@ -33,14 +33,17 @@ namespace Gunny.Controllers
                     return Redirect("/dang-nhap");
                 }
                 ViewBag.userAgency = null;
+                ViewBag.Count = 0l;
                 if (user.Presenter != null)
                 {
                     var userAgency = _context.MemAccounts.FirstOrDefault( m=> m.Email== user.Presenter);
                     if(userAgency!= null)
                     {
                         ViewBag.userAgency = userAgency;
+                        ViewBag.Count = _context.MemAccounts.Where(m => m.Presenter == user.Presenter).Count();
                     }
                 }
+              
                 var memAccount = new Models.InformationMemAccount.User
                 {
                     UserId = user.UserId,
@@ -55,6 +58,8 @@ namespace Gunny.Controllers
                     Cmndnumber = user.Cmndnumber,
                     BankUserName = user.BankUserName,
                     IsValidate = user.IsValidate,
+                    Nickname = user.Nickname,
+                    AvatarName=user.Avatar,
                 };
                 
                 return View(memAccount);
