@@ -19,5 +19,6 @@ namespace Gunny.Models
         public string LinkFlash { get; set; }
         public DateTime DateOpen { get; set; }
         public int IsActive { get; set; }
+        public string LoginKey { get; set; }
     }
 }

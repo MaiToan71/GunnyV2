@@ -66,7 +66,8 @@ namespace Gunny.Controllers
                     Presenter = user.Presenter,
                     Nickname = user.Nickname,
                     TotalMoney = user.TotalMoney,
-
+                    CMNDName = user.Cmndname,
+                   
                 };
                 return View(memAccount);
             }
@@ -254,7 +255,7 @@ namespace Gunny.Controllers
                     user.Cmndpath1 = CmndpathName1;
                     user.Cmndpath2 = CmndpathName2;
                     user.Avatar = avartar;
-                    user.CMNDName = memAccount.CMNDName;
+                    user.Cmndname = memAccount.CMNDName;
                     user.Nickname = memAccount.Nickname;
 
                     _context.SaveChanges();

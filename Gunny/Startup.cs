@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Gunny
 {
-    //Scaffold-DbContext "Server=LAPTOP-DO63GVQ8\SQLEXPRESS;Database=Member_GMP;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
+    //Scaffold-DbContext "Server=IAMMAITOAN\SQL2019;Database=Member_GMP2;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
     public class Startup
     {
         public Startup(IConfiguration configuration)

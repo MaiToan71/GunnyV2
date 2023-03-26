@@ -1,0 +1,50 @@
+﻿@model Gunny.Models.MemAccount
+@{
+    ViewData["Title"] = "Nạp tiền tài khoản ";
+    Layout = "~/Views/Shared/_AdminGunny.cshtml";
+}
+<div class="col-md-6">
+    <div class="card card-xl-stretch mb-5 mb-xl-12">
+
+        <div class="card-body py-3 row">
+            <h1>Thông tin nạp tiền</h1>
+            <hr />
+            @using (Html.BeginForm("UpdateTotalMoney", "Admin", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @if (@TempData["AlerMessageSuccess"] != null)
+                {
+                    <div class="alert alert-success" role="alert" style="display: flex; justify-content: center; width: 100%; }">
+                        @TempData["AlerMessageSuccess"]
+                    </div>
+                }
+                @if (@TempData["AlerMessageError"] != null)
+                {
+                    <div class="alert alert-danger" role="alert" style="display: flex; justify-content: center; width: 100%; }">
+                        @TempData["AlerMessageError"]
+                    </div>
+                }
+                <div class="fv-row mb-10" style="display:none">
+                    <label class="form-label fs-6 fw-bolder text-dark">UserId người dùng</label>
+                    @Html.TextBoxFor(m => m.UserId, "", new { @class = "form-control", @placeholder = "", @style="display:none" })
+                </div>
+                <div class="fv-row mb-10"style="display:none">
+                    <label class="form-label fs-6 fw-bolder text-dark">Biệt danh</label>
+                    @Html.TextBoxFor(m => m.Nickname, "", new { @class = "form-control", @placeholder = "" , @style="display:none"})
+                </div>
+                <div class="fv-row mb-10">
+                    <label class="form-label fs-6 fw-bolder text-dark">Tên đăng nhập</label>
+                    @Html.TextBoxFor(m => m.Email, "", new { @class = "form-control", @placeholder = "" })
+                </div>
+                <div class="fv-row mb-10">
+                    <label class="form-label fs-6 fw-bolder text-dark">Nhập số tiền cần nạp</label>
+                    @Html.TextBoxFor(m => m.Money, "", new { @text = "number", @class = "form-control", @placeholder = "" })
+                </div>
+                <div class="d-flex justify-content-center " style="margin-top:10px; margin-bottom:10px">
+                    <a href="/admin/users" class="btn btn-primary" style="color:white  !important; margin-right:10px">Quay lại</a>
+                    <button type="submit" class="btn btn-primary ">Cập nhật </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

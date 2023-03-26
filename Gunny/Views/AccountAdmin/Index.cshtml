@@ -10,7 +10,7 @@
 </style>
 
 
-
+<link href="/css/canhan.css" rel="stylesheet" type="text/css" />
 <div class="row">
 
     <div class="col-md-3">
@@ -21,20 +21,20 @@
                         width: 100%;
                         justify-content: center;
                         align-items: center;">
-                 @if (ViewBag.userAgency != null)
+                    @if (ViewBag.userAgency != null)
                     {
                         <img height="50" src="/files/@ViewBag.userAgency.Avatar" class="sc-fIzWTo SOFm avatar">
                     }
-                     @if (ViewBag.userAgency == null)
+                    @if (ViewBag.userAgency == null)
                     {
                         <img height="50" src="/imgs/user.png" class="sc-fIzWTo SOFm avatar">
                     }
                 </div>
-                 @if (ViewBag.userAgency != null)
-                    {
-                <p style="text-align:center; font-weight:bold;margin-top:10px">
+                @if (ViewBag.userAgency != null)
+                {
+                    <p style="text-align:center; font-weight:bold;margin-top:10px">
                         @ViewBag.userAgency.Nickname
-                </p>
+                    </p>
                 }
                 @if (ViewBag.userAgency == null)
                 {
@@ -89,7 +89,7 @@
         </div>
     </div>
 </div>
-
+ 
 <div class="row">
     <div class="col-md-6">
         <h2>Thông tin hồ sơ</h2>

@@ -60,6 +60,8 @@ namespace Gunny.Controllers
                     IsValidate = user.IsValidate,
                     Nickname = user.Nickname,
                     AvatarName=user.Avatar,
+                    CMNDName = user.Cmndname,
+                    TotalMoney = user.TotalMoney,
                 };
                 
                 return View(memAccount);

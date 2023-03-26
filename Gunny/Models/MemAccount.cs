@@ -7,6 +7,11 @@ namespace Gunny.Models
 {
     public partial class MemAccount
     {
+        public MemAccount()
+        {
+            InverseParent = new HashSet<MemAccount>();
+        }
+
         public int UserId { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
@@ -24,6 +29,7 @@ namespace Gunny.Models
         public string Ipcreate { get; set; }
         public bool? AllowSocialLogin { get; set; }
         public int? TimeCreate { get; set; }
+        public string Password2 { get; set; }
         public string Cmndpath1 { get; set; }
         public string BankNumber { get; set; }
         public string BankName { get; set; }
@@ -32,15 +38,18 @@ namespace Gunny.Models
         public string BankUserName { get; set; }
         public string Cmndpath2 { get; set; }
         public string MemEmail { get; set; }
-        public string Password2 { get; set; }
         public bool? IsValidatePassword2 { get; set; }
         public bool? IsBlock { get; set; }
-        public string ParentId { get; set; }
+        public int? ParentId { get; set; }
         public string Presenter { get; set; }
         public string Avatar { get; set; }
         public string Nickname { get; set; }
-        public string CMNDName { get; set; }
+        public string Cmndname { get; set; }
+        public string UserAgent { get; set; }
         public int? TypeF { get; set; }
         public string EmailF0 { get; set; }
+
+        public virtual MemAccount Parent { get; set; }
+        public virtual ICollection<MemAccount> InverseParent { get; set; }
     }
 }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using X.PagedList;
@@ -68,7 +69,7 @@ namespace Gunny.Controllers
                 {
                     string password = GetMD5(userAdmin.Password);
                     var data = _context.NewUserAdmins.Where(m => m.Username == userAdmin.Username && m.Password == password);
-                    if (data.Count() > 0 )
+                    if (data.Count() > 0)
                     {
                         string userid = data.First().Id.ToString();
                         SetCookie("gunny_userid_admin", userid, 9999999);
@@ -82,7 +83,8 @@ namespace Gunny.Controllers
                     }
                 }
                 return Redirect("/admin/login");
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 TempData["AlerMessage"] = "Có lỗi hệ thống";
                 return Redirect("/admin/login");
@@ -154,7 +156,7 @@ namespace Gunny.Controllers
                 return View();
             }
         }
-       
+
 
         [Route("admin/users/{id}")]
         public IActionResult Edit(int Id)
@@ -190,6 +192,9 @@ namespace Gunny.Controllers
                     IsValidate = user.IsValidate,
                     AvatarName = user.Avatar,
                     Presenter = user.Presenter,
+                    Nickname = user.Nickname,
+                    TotalMoney = user.TotalMoney,
+                    CMNDName= user.Cmndname
                 };
                 return View(memAccount);
             }
@@ -220,90 +225,90 @@ namespace Gunny.Controllers
         {
             string cookieValueFromReq = Request.Cookies["gunny_userid_admin"];
             string memId = Request.Cookies["memId"];
-           
+
             if (cookieValueFromReq == null && memId == null)
             {
 
-                return Redirect("/dang-nhap");
+                return Redirect("/admin/login");
             }
             else
             {
                 try
                 {
-                  
+
                     int userid = Int32.Parse(memId);
                     var user = _context.MemAccounts.Find(userid);
-                        var listUsers = _context.MemAccounts.Where(m => m.Email == memAccount.Email && m.Email != user.Email);
-                        if (listUsers.Count() > 0)
+                    var listUsers = _context.MemAccounts.Where(m => m.Email == memAccount.Email && m.Email != user.Email);
+                    if (listUsers.Count() > 0)
+                    {
+                        TempData["AlerMessageError"] = "Tài khoản đã tồn tại, hãy nhập tên khác";
+                        return Redirect("/admin/users/" + memId);
+                    }
+                    if (memAccount.Email == null || memAccount.Fullname == null || memAccount.Phone == null ||
+                        memAccount.BankNumber == null || memAccount.BankName == null || memAccount.Cmndnumber == null ||
+                        memAccount.MemEmail == null)
+                    {
+                        TempData["AlerMessageError"] = "Hãy điền đầy đủ thông tin";
+                        return Redirect("/admin/users/" + memId);
+                    }
+
+                    //FILE1
+                    IFormFile file1 = memAccount.Cmndpath1;
+                    var CmndpathName1 = memAccount.NameCmndpath1;
+                    if (memAccount.NameCmndpath1 == null)
+                    {
+
+                        if (file1 == null || file1.Length == 0)
                         {
-                            TempData["AlerMessageError"] = "Tài khoản đã tồn tại, hãy nhập tên khác";
-                             return Redirect("/admin/users/" + memId);
-                        }
-                        if (memAccount.Email == null || memAccount.Fullname == null || memAccount.Phone == null ||
-                            memAccount.BankNumber == null || memAccount.BankName == null || memAccount.Cmndnumber == null ||
-                            memAccount.MemEmail == null)
-                        {
-                            TempData["AlerMessageError"] = "Hãy điền đầy đủ thông tin";
-                             return Redirect("/admin/users/" + memId);
+                            TempData["AlerMessageError"] = "Đã có lỗi hệ thống! Chưa cập nhật ảnh mặt trước CMND";
+                            return Redirect("/admin/users/" + memId);
                         }
 
-                        //FILE1
-                        IFormFile file1 = memAccount.Cmndpath1;
-                        var CmndpathName1 = memAccount.NameCmndpath1;
-                        if (memAccount.NameCmndpath1 == null)
+                    }
+                    if (file1 != null)
+                    {
+                        if (file1.Length > 0)
                         {
+                            var nameFile1 = CreateName(20);
+                            CmndpathName1 = nameFile1 + file1.FileName;
+                            var path1 = Path.Combine(
+                                        Directory.GetCurrentDirectory(), "wwwroot/files",
+                                       CmndpathName1);
 
-                            if (file1 == null || file1.Length == 0)
+                            using (var stream = new FileStream(path1, FileMode.Create))
                             {
-                                TempData["AlerMessageError"] = "Đã có lỗi hệ thống! Chưa cập nhật ảnh mặt trước CMND";
-                                 return Redirect("/admin/users/" + memId);
-                            }
-
-                        }
-                        if (file1 != null)
-                        {
-                            if (file1.Length > 0)
-                            {
-                                var nameFile1 = CreateName(20);
-                                CmndpathName1 = nameFile1 + file1.FileName;
-                                var path1 = Path.Combine(
-                                            Directory.GetCurrentDirectory(), "wwwroot/files",
-                                           CmndpathName1);
-
-                                using (var stream = new FileStream(path1, FileMode.Create))
-                                {
-                                    await file1.CopyToAsync(stream);
-                                }
-                            }
-                        }
-                        //FILE2
-                        var CmndpathName2 = memAccount.NameCmndpath2;
-                        IFormFile file2 = memAccount.Cmndpath2;
-                        if (memAccount.NameCmndpath2 == null)
-                        {
-
-                            if (file2 == null || file2.Length == 0)
-                            {
-                                TempData["AlerMessageError"] = "Đã có lỗi hệ thống! Chưa cập nhật ảnh mặt sau CMND";
-                                 return Redirect("/admin/users/" + memId);
+                                await file1.CopyToAsync(stream);
                             }
                         }
-                        if (file2 != null)
-                        {
-                            if (file2.Length > 0)
-                            {
-                                var nameFile2 = CreateName(20);
-                                CmndpathName2 = nameFile2 + file2.FileName;
-                                var path2 = Path.Combine(
-                                            Directory.GetCurrentDirectory(), "wwwroot/files",
-                                           CmndpathName2);
+                    }
+                    //FILE2
+                    var CmndpathName2 = memAccount.NameCmndpath2;
+                    IFormFile file2 = memAccount.Cmndpath2;
+                    if (memAccount.NameCmndpath2 == null)
+                    {
 
-                                using (var stream = new FileStream(path2, FileMode.Create))
-                                {
-                                    await file2.CopyToAsync(stream);
-                                }
+                        if (file2 == null || file2.Length == 0)
+                        {
+                            TempData["AlerMessageError"] = "Đã có lỗi hệ thống! Chưa cập nhật ảnh mặt sau CMND";
+                            return Redirect("/admin/users/" + memId);
+                        }
+                    }
+                    if (file2 != null)
+                    {
+                        if (file2.Length > 0)
+                        {
+                            var nameFile2 = CreateName(20);
+                            CmndpathName2 = nameFile2 + file2.FileName;
+                            var path2 = Path.Combine(
+                                        Directory.GetCurrentDirectory(), "wwwroot/files",
+                                       CmndpathName2);
+
+                            using (var stream = new FileStream(path2, FileMode.Create))
+                            {
+                                await file2.CopyToAsync(stream);
                             }
                         }
+                    }
                     //FILE Avatar
                     var avartar = memAccount.AvatarName;
                     IFormFile fileAvatar = memAccount.AvatarLink;
@@ -333,31 +338,33 @@ namespace Gunny.Controllers
                     }
 
                     if (user == null)
-                        {
-                            return Redirect("/dang-nhap");
-                        }
+                    {
+                        return Redirect("/admin/login");
+                    }
 
-                        user.Email = memAccount.Email;
-                        user.Fullname = memAccount.Fullname;
-                        user.Phone = memAccount.Phone;
-                        user.BankNumber = memAccount.BankNumber;
-                        user.BankName = memAccount.BankName;
-                        user.Cmndnumber = memAccount.Cmndnumber;
-                        user.BankUserName = memAccount.BankUserName;
-                        user.MemEmail = memAccount.MemEmail;
-                        user.IsValidate = 2;
-                        user.Cmndpath1 = CmndpathName1;
-                        user.Cmndpath2 = CmndpathName2;
+                    user.Email = memAccount.Email;
+                    user.Fullname = memAccount.Fullname;
+                    user.Phone = memAccount.Phone;
+                    user.BankNumber = memAccount.BankNumber;
+                    user.BankName = memAccount.BankName;
+                    user.Cmndnumber = memAccount.Cmndnumber;
+                    user.BankUserName = memAccount.BankUserName;
+                    user.MemEmail = memAccount.MemEmail;
+                    user.IsValidate = 2;
+                    user.Cmndpath1 = CmndpathName1;
+                    user.Cmndpath2 = CmndpathName2;
                     user.Avatar = avartar;
+                    user.Cmndname = memAccount.CMNDName;
+                    user.Nickname = memAccount.Nickname;
                     _context.SaveChanges();
-                        TempData["AlerMessageSuccess"] = "Bạn đã cập nhật thông tin";
-                         return Redirect("/admin/users/" + memId);
-                    
+                    TempData["AlerMessageSuccess"] = "Bạn đã cập nhật thông tin";
+                    return Redirect("/admin/users/" + memId);
+
                 }
                 catch (Exception)
                 {
                     TempData["AlerMessageError"] = "Đã có lỗi hệ thống! Chưa cập nhật thông tin";
-                     return Redirect("/admin/users/" + memId);
+                    return Redirect("/admin/users/" + memId);
                 }
             }
         }
@@ -370,7 +377,7 @@ namespace Gunny.Controllers
             if (cookieValueFromReq == null)
             {
 
-                return Redirect("/dang-nhap");
+                return Redirect("/admin/login");
             }
             else
             {
@@ -393,7 +400,7 @@ namespace Gunny.Controllers
             if (cookieValueFromReq == null && memId == null)
             {
 
-                return Redirect("/dang-nhap");
+                return Redirect("/admin/login");
             }
             else
             {
@@ -402,7 +409,7 @@ namespace Gunny.Controllers
                 if (changePassword.Password2 == null || changePassword.ConfirmPassword2 == null)
                 {
                     TempData["AlerMessageError"] = "Bạn phải nhập dữ liệu";
-                    return Redirect("/PasswordLevel2/users/"+ memId);
+                    return Redirect("/PasswordLevel2/users/" + memId);
                 }
                 if (changePassword.Password2 != changePassword.ConfirmPassword2)
                 {
@@ -426,7 +433,7 @@ namespace Gunny.Controllers
             string cookieValueFromReq = Request.Cookies["gunny_userid_admin"];
             if (cookieValueFromReq == null)
             {
-                return Redirect("/dang-nhap");
+                return Redirect("/admin/login");
             }
             else
             {
@@ -453,18 +460,18 @@ namespace Gunny.Controllers
                 ViewBag.MemAccount = links.ToPagedList(pageNumber, pageSize);
                 string memId = Id.ToString();
                 SetCookie("memId", memId, 9999999);
-                ViewBag.Histories = _context.MemHistories.Where(m => m.UserId ==Id).ToPagedList(pageNumber, pageSize);
+                ViewBag.Histories = _context.MemHistories.Where(m => m.UserId == Id).ToPagedList(pageNumber, pageSize);
                 return View();
             }
         }
 
-        
+
         public IActionResult Payments(int? page)
         {
             string cookieValueFromReq = Request.Cookies["gunny_userid_admin"];
             if (cookieValueFromReq == null)
             {
-                return Redirect("/dang-nhap");
+                return Redirect("/admin/login");
             }
             else
             {
@@ -492,21 +499,107 @@ namespace Gunny.Controllers
             }
         }
 
-       
+
         public IActionResult IsReadHistory(int? Id)
         {
             string cookieValueFromReq = Request.Cookies["gunny_userid_admin"];
             if (cookieValueFromReq == null)
             {
-                return Redirect("/dang-nhap");
+                return Redirect("/admin/login");
             }
             else
             {
                 var item = _context.MemHistories.Find(Id);
                 item.IsRead = true;
+                var user = _context.MemAccounts.Find(item.UserId);
+                if (item.TypeCode == 1)
+                {
+                    user.TotalMoney += item.Value;
+                }
+                else
+                {
+                    user.TotalMoney -= item.Value;
+                }
                 _context.SaveChanges();
                 return Redirect("/admin/Payments");
             }
-         }
+        }
+
+        public IActionResult UnReadHistory(int? Id)
+        {
+            string cookieValueFromReq = Request.Cookies["gunny_userid_admin"];
+            if (cookieValueFromReq == null)
+            {
+                return Redirect("/admin/login");
+            }
+            else
+            {
+                var item = _context.MemHistories.Find(Id);
+                item.IsRead = false;
+                var user = _context.MemAccounts.Find(item.UserId);
+                if (item.TypeCode == 1)
+                {
+                    user.TotalMoney -= item.Value;
+                }
+                else
+                {
+                    user.TotalMoney += item.Value;
+                }
+                _context.SaveChanges();
+                return Redirect("/admin/Payments");
+            }
+        }
+
+
+        public IActionResult Recharge(int? id)
+        {
+            string cookieValueFromReq = Request.Cookies["gunny_userid_admin"];
+            if (cookieValueFromReq == null)
+            {
+                return Redirect("/admin/login");
+            }
+            else
+            {
+                var item = _context.MemAccounts.Find(id);
+                return View(item);
+            }
+        }
+
+        public IActionResult UpdateTotalMoney(MemAccount account)
+        {
+            string cookieValueFromReq = Request.Cookies["gunny_userid_admin"];
+            if (cookieValueFromReq == null)
+            {
+                return Redirect("/admin/login");
+            }
+            else
+            {
+                var item = _context.MemAccounts.Find(account.UserId);
+               /* if(account.Money < 0)
+                {
+                    TempData["AlerMessageError"] = "Nhập số tiền lớn hơn 0";
+                    return Redirect("/admin/Recharge?id="+ account.UserId);
+                }*/
+                item.TotalMoney += account.Money;
+                _context.SaveChanges();
+
+                TempData["AlerMessageSuccess"] = "Đã nạp tiền, Vui lòng quay lại kiểm tra ";
+                return Redirect("/admin/Recharge?id=" + account.UserId);
+            }
+        }
+
+        public IActionResult TreeView()
+        {
+            string cookieValueFromReq = Request.Cookies["gunny_userid_admin"];
+            if (cookieValueFromReq == null)
+            {
+                return Redirect("/admin/login");
+            }
+            else
+            {
+                
+                return View();
+            }
+        }
     }
 }

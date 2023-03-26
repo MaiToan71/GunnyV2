@@ -43,7 +43,14 @@ namespace Gunny.Models
         public virtual DbSet<UserAdmin> UserAdmins { get; set; }
         public virtual DbSet<WsItemDuaTop> WsItemDuaTops { get; set; }
 
-      
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=IAMMAITOAN\\SQL2019;Database=Member_GMP2;Trusted_Connection=True;");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -200,14 +207,16 @@ namespace Gunny.Models
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
 
-                entity.Property(e => e.BankName).HasMaxLength(200);
+                entity.Property(e => e.BankNumber).HasMaxLength(500);
 
-                entity.Property(e => e.BankNumber).HasMaxLength(200);
+                entity.Property(e => e.BankUserName).HasMaxLength(500);
 
-                entity.Property(e => e.BankUserName).HasMaxLength(200);
+                entity.Property(e => e.Cmndname)
+                    .HasMaxLength(500)
+                    .HasColumnName("CMNDName");
 
                 entity.Property(e => e.Cmndnumber)
-                    .HasMaxLength(200)
+                    .HasMaxLength(500)
                     .HasColumnName("CMNDNumber");
 
                 entity.Property(e => e.Cmndpath1).HasColumnName("CMNDPath1");
@@ -226,15 +235,26 @@ namespace Gunny.Models
 
                 entity.Property(e => e.MemEmail).HasMaxLength(50);
 
+                entity.Property(e => e.Nickname).HasMaxLength(500);
+
                 entity.Property(e => e.Password).HasMaxLength(500);
 
                 entity.Property(e => e.Password2).HasMaxLength(500);
 
                 entity.Property(e => e.Phone).HasMaxLength(100);
 
+                entity.Property(e => e.Presenter).HasMaxLength(500);
+
+                entity.Property(e => e.UserAgent).HasMaxLength(500);
+
                 entity.Property(e => e.Vipexp).HasColumnName("VIPExp");
 
                 entity.Property(e => e.Viplevel).HasColumnName("VIPLevel");
+
+                entity.HasOne(d => d.Parent)
+                    .WithMany(p => p.InverseParent)
+                    .HasForeignKey(d => d.ParentId)
+                    .HasConstraintName("FK_Mem_Account_Mem_Account");
             });
 
             modelBuilder.Entity<MemAccountBlock>(entity =>
@@ -458,6 +478,8 @@ namespace Gunny.Models
                     .IsRequired()
                     .HasMaxLength(500);
 
+                entity.Property(e => e.LoginKey).HasMaxLength(500);
+
                 entity.Property(e => e.Password)
                     .IsRequired()
                     .HasMaxLength(500);
@@ -491,7 +513,7 @@ namespace Gunny.Models
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Password)
-                    .HasMaxLength(50)
+                    .HasColumnType("text")
                     .HasColumnName("password");
 
                 entity.Property(e => e.Type).HasColumnName("type");

@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Payments";
     Layout = "~/Views/Shared/_AdminGunny.cshtml";
 }
@@ -9,62 +8,83 @@
 @using X.PagedList;
 @model Gunny.Models.MemHistory
 
+<div class="col-md-12">
+    <div class="card card-xl-stretch mb-5 mb-xl-12">
+        <div class="card-body py-3 row">
+            <h1>Lịch sử yêu cầu  nạp/rút UserId</h1>
+            <table class="table align-middle table-row-dashed fs-6 gy-5">
+                <thead>
+                    <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
+                        <th style="width:5%" class="min-w-125px sorting text-dark">
+                            Trạng thái
+                        </th>
+                        <th style="width:10%" class="min-w-125px sorting text-dark">
+                           Hình thức
+                        </th>
 
-<h1>Lịch sử yêu cầu  nạp/rút UserId</h1>
-<table class="table table table-bordere">
-    <tr>
-        <th style="width:5%">
-            UserId
-        </th>
-        <th style="width:10%">
-            Type
-        </th>
-       
-        <th style="width:30%">
-            Content
-        </th>
-        <th style="width:20%">
-            Thời gian tạo
-        </th>
-        <th style="width:10%">
-           Thao tác
-        </th>
-    </tr>
-    @foreach (var item in ViewBag.Histories)
-    {
-        <tr>
-            <td>
-                @item.UserId
-            </td>
-            
-            <td>
-                @item.Type
-            </td>
-            <td>
-                @Html.Raw(item.Content)
-            </td>
-            <td class="timecreate">
-                @item.TimeCreate
-            </td>
-            <td>
-                @if (item.IsRead != true)
+                        <th style="width:30%" class="min-w-125px sorting text-dark">
+                            Content
+                        </th>
+                       
+                        <th style="width:10%" class="min-w-125px sorting text-dark">
+                            Số tiền 
+                        </th>
+                         <th style="width:20%" class="min-w-125px sorting text-dark">
+                            Thời gian tạo
+                        </th>
+                        <th style="width:10%" class="min-w-125px sorting text-dark">
+                            Thao tác
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in ViewBag.Histories)
                 {
-                    <a href="/admingunny/IsReadHistory?Id=@item.Id" style="color:red">Chưa đọc</a>
+                    <tr>
+                        <td>
+                            @if (item.IsRead != true)
+                            {
+                                <p style="color:red">Chưa duyệt</p>
+                            }
+                            @if (item.IsRead == true)
+                            {
+                                <p style="color:blue">Đã duyệt</p>
+                            }
+                        </td>
+
+                        <td>
+                            @item.Type
+                        </td>
+                        <td>
+                            @Html.Raw(item.Content)
+                        </td>
+                            <td class="moneys">@item.Value</td>
+                        <td class="timecreate">
+                            @item.TimeCreate
+                        </td>
+                          
+                        <td>
+                            @if (item.IsRead != true)
+                            {
+                                <a class="btn btn-sm btn-success" href="/admin/IsReadHistory?Id=@item.Id" >Duyệt</a>
+                            }
+                            @if (item.IsRead == true)
+                            {
+                                    <a class="btn btn-sm btn-danger" href="/admin/UnReadHistory?Id=@item.Id">Hủy</a>
+                            }
+
+                        </td>
+                    </tr>
                 }
-                @if (item.IsRead == true)
-                {
-                    <p style="color:blue">Đã đọc</p>
-                }
-
-            </td>
-        </tr>
-    }
-
-</table>
-<!-- Thêm mã phân trang -->
-<br />
+                </tbody>
+            </table>
+            <!-- Thêm mã phân trang -->
+            <br />
 
 
-@Html.PagedListPager((IPagedList)ViewBag.Histories, page => Url.Action("Payments", "AdminGunny",
-    new { page = page }))
+            @Html.PagedListPager((IPagedList)ViewBag.Histories, page => Url.Action("Payments", "admin",
+            new { page = page }))
 
+        </div>
+    </div>
+</div>

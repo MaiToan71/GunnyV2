@@ -4,8 +4,6 @@
     Layout = "~/Views/Shared/_Login.cshtml";
 }
 
-<link href="~/css/Login.css" rel="stylesheet" />
-<p class="tip"></p>
 @using (Html.BeginForm("PostLogin", "Admin", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
@@ -18,29 +16,18 @@
             </div>
         }
         <div class="form sign-in">
-            <h2>Đăng nhập với Admin hệ thống </h2>
-            <label>
-                <span>Tên đăng nhập</span>
-                @Html.TextBoxFor(m => m.Username, "", new { @class = "form-control", @placeholder = "" })
-
-            </label>
-            <label>
-                <span>Mật khẩu</span>
-                @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "" })
-            </label>
-            <button type="submit" class="submit">Đăng nhập</button>
+            <h1 class="text-dark mb-3" style="text-align:center">Quản trị  Wefinance </h1>
         </div>
-
-        <div class="sub-cont">
-            <div class="img">
-                <div class="img__text m--up">
-                    <h2>Nhiều sự kiện mới!</h2>
-                    <p>Đăng nhập để quản lí khoản  !</p>
-                </div>
-
-            </div>
+        <div class="fv-row mb-10">
+            <label class="form-label fs-6 fw-bolder text-dark">Tên đăng nhập</label>
+            @Html.TextBoxFor(m => m.Username, "", new { @class = "form-control", @placeholder = "" })
 
         </div>
+        <div class="fv-row mb-10">
+            <label class="form-label fs-6 fw-bolder text-dark">Mật khẩu</label>
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "" })
+        </div>
+        <button type="submit" class="submit btn btn-lg btn-primary w-100 mb-5">Đăng nhập</button>
     </div>
 }
 
