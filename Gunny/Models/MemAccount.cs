@@ -48,6 +48,8 @@ namespace Gunny.Models
         public string UserAgent { get; set; }
         public int? TypeF { get; set; }
         public string EmailF0 { get; set; }
+        public int TotalRoseF1 { get; set; }
+        public int TotalRoseF2toF7 { get; set; }
 
         public virtual MemAccount Parent { get; set; }
         public virtual ICollection<MemAccount> InverseParent { get; set; }

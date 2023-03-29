@@ -18,7 +18,7 @@ namespace Gunny.Controllers
 
         public IActionResult Index(int? page)
         {
-            int pageNumber = 1;
+          /*  int pageNumber = 1;
 
             if (page == null)
             {
@@ -61,58 +61,58 @@ namespace Gunny.Controllers
                 nextNumber = 1;
             }
             ViewBag.nextNumber = nextNumber;
-            ViewBag.Pages = pages;
-            return View();
+            ViewBag.Pages = pages;*/
+            return Redirect("/dang-nhap");
         }
 
         [Route("/tim-kiem/{search}")]
         public IActionResult Search(int? page, string search)
         {
-            int pageNumber = 1;
+            /* int pageNumber = 1;
 
-            if (page == null)
-            {
-                pageNumber = 1;
-            }
-            else
-            {
-                pageNumber = (int)page;
-                if (page <= 0)
-                {
-                    pageNumber = 1;
-                }
-            }
-            var list = _users.SearchListUser(pageNumber, search).Result;
-            ViewBag.ListUsers = list.result;
+             if (page == null)
+             {
+                 pageNumber = 1;
+             }
+             else
+             {
+                 pageNumber = (int)page;
+                 if (page <= 0)
+                 {
+                     pageNumber = 1;
+                 }
+             }
+             var list = _users.SearchListUser(pageNumber, search).Result;
+             ViewBag.ListUsers = list.result;
 
-            ViewBag.Total = list.total;
-            ViewBag.Search = search;
+             ViewBag.Total = list.total;
+             ViewBag.Search = search;
 
-            List<int> pages = new List<int>();
-            int total = (int)list.total;
-            for (var i = 0; i <= total / 20; i++)
-            {
-                pages.Add(i);
-            }
-            if (pages.Count() == 0)
-            {
-                pages.Add(1);
-            }
-            ViewBag.pageNumber = pageNumber;
-            int prevNumber = pageNumber - 1;
-            if (prevNumber <= 0)
-            {
-                prevNumber = 1;
-            }
-            ViewBag.prevNumber = prevNumber;
-            int nextNumber = pageNumber + 1;
-            if (nextNumber <= 0)
-            {
-                nextNumber = 1;
-            }
-            ViewBag.nextNumber = nextNumber;
-            ViewBag.Pages = pages;
-            return View();
+             List<int> pages = new List<int>();
+             int total = (int)list.total;
+             for (var i = 0; i <= total / 20; i++)
+             {
+                 pages.Add(i);
+             }
+             if (pages.Count() == 0)
+             {
+                 pages.Add(1);
+             }
+             ViewBag.pageNumber = pageNumber;
+             int prevNumber = pageNumber - 1;
+             if (prevNumber <= 0)
+             {
+                 prevNumber = 1;
+             }
+             ViewBag.prevNumber = prevNumber;
+             int nextNumber = pageNumber + 1;
+             if (nextNumber <= 0)
+             {
+                 nextNumber = 1;
+             }
+             ViewBag.nextNumber = nextNumber;
+             ViewBag.Pages = pages;*/
+            return Redirect("/dang-nhap");
         }
     }
 }

@@ -28,6 +28,10 @@
                 <h1 class="text-dark mb-3">Đăng ký tài khoản   </h1>
             </div>
             <div class="fv-row mb-10">
+                <label class="form-label fs-6 fw-bolder text-dark">Biệt danh</label>
+                @Html.TextBoxFor(m => m.Nickname, "", new { @class = "form-control", @placeholder = "" })
+            </div>
+            <div class="fv-row mb-10">
                 <label class="form-label fs-6 fw-bolder text-dark">Tài khoản đăng nhập</label>
                 @Html.TextBoxFor(m => m.UserName, "", new { @class = "form-control", @placeholder = "" })
             </div>
@@ -38,13 +42,7 @@
                 @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "" })
             </div>
             <div class="fv-row mb-10">
-                <label class="form-label fs-6 fw-bolder text-dark">
-                    Nhập lại mật khẩu 1
-                </label>
-                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "" })
-            </div>
-            <div class="fv-row mb-10">
-                <label class="form-label fs-6 fw-bolder text-dark">Nhập lại mật khẩu 2</label>
+                <label class="form-label fs-6 fw-bolder text-dark">Nhập  mật khẩu 2</label>
                 @Html.PasswordFor(m => m.Password2, new { @class = "form-control", @placeholder = "" })
             </div>
             <div class="text-center">

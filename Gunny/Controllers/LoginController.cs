@@ -102,7 +102,7 @@ namespace Gunny.Controllers
                 if (ModelState.IsValid)
                 {
                     var f_password = GetMD5(memAccount.Password);
-                    var data = _context.MemAccounts.FirstOrDefault(m => m.Email == memAccount.Email && m.Password == f_password);
+                    var data = _context.MemAccounts.FirstOrDefault(m => m.Email == memAccount.Email && m.Password == f_password && m.IsBlock == false);
                     if (data != null)
                     {
                         string userid = data.UserId.ToString();
@@ -175,7 +175,7 @@ namespace Gunny.Controllers
         {
             if (ModelState.IsValid)
             {
-                var checkEmail = _context.MemAccounts.Where(m => m.Email == userRegister.UserName);
+                var checkEmail = _context.MemAccounts.Where(m => m.Email == userRegister.UserName );
                 if (checkEmail.Count() > 0)
                 {
                     TempData["AlerMessageError"] = "Tên đăng nhập đã có người đăng ký";
@@ -194,18 +194,18 @@ namespace Gunny.Controllers
                     count++;
                 }
                 var time = DateTimeOffset.Now.ToUnixTimeSeconds();
-                if (userRegister.UserName == null || userRegister.Password == null || userRegister.ConfirmPassword == null || userRegister.Password2 == null)
+                if (userRegister.UserName == null || userRegister.Password == null || userRegister.Password2 == null)
                 {
                     TempData["AlerMessageError"] = "Bạn không được để trống thông tin";
                     return Redirect("/dang-ky");
                 }
                 var f_password = GetMD5(userRegister.Password);
-                var f_confirmPassword = GetMD5(userRegister.ConfirmPassword);
+              /*  var f_confirmPassword = GetMD5(userRegister.ConfirmPassword);
                 if (userRegister.Password !=  userRegister.ConfirmPassword)
                 {
                     TempData["AlerMessageError"] = "Mật khẩu chưa trùng khớp";
                     return Redirect("/dang-ky");
-                }
+                }*/
 
                 var user = new MemAccount
                 {
@@ -225,7 +225,11 @@ namespace Gunny.Controllers
                     AllowSocialLogin = true,
                     TimeCreate = unchecked((int)time),
                     Password2 = GetMD5(userRegister.Password2),
-                    TypeF=0
+                    TypeF=0,
+                    Nickname= userRegister.Nickname,
+                    TotalRoseF2toF7 = 0,
+                    TotalRoseF1=0,
+                    IsBlock= false,
                 };
                 _context.MemAccounts.Add(user);
                 _context.SaveChanges();

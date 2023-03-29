@@ -211,26 +211,29 @@ namespace Gunny.APIs
             }).ToList();
             return result;
         }
-        [Route("{email}")]
-        public dynamic GetUser(string email)
+        [Route("{id}")]
+        public dynamic GetUser(int id)
         {
-            var result = _context.MemAccounts.Where(m =>  m.Email == email).Select(m => new
+            var result = _context.MemAccounts.Where(m =>  m.UserId == id).Select(m => new
             {
+                m.Parent,
                 m.Email,
-                m.Presenter
+                m.Presenter,
+                m.ParentId,
+                m.UserId,
             }).First();
             return result;
         }
-        [Route("{email}/{presenter}")]
+        [Route("{userid}/{userIdSelected}")]
         [HttpPost]
-        public dynamic PostPresenter(string email, string presenter)
+        public dynamic PostPresenter(int userid, int userIdSelected)
         {
-            var parent= _context.MemAccounts.FirstOrDefault(m => m.Email == presenter);
+            var parent= _context.MemAccounts.FirstOrDefault(m => m.UserId == userIdSelected);
             if(parent == null)
             {
                 return false;
             }
-            var child = _context.MemAccounts.FirstOrDefault(m => m.Email == email);
+            var child = _context.MemAccounts.FirstOrDefault(m => m.UserId == userid);
            
             if(child == null)
             {
@@ -238,9 +241,9 @@ namespace Gunny.APIs
                 return false;
             };
             var checkEdit = false;
-            if(child.Presenter ==null)
+            if(child.ParentId ==null)
             {
-                var checkChild = _context.MemAccounts.Where(m => m.Presenter == child.Email).Count();
+                var checkChild = _context.MemAccounts.Where(m => m.ParentId == child.UserId).Count();
                 if(checkChild > 0)
                 {
                     checkEdit = true;
@@ -249,17 +252,7 @@ namespace Gunny.APIs
             }
             if (checkEdit == false)
             {
-                child.Presenter = presenter;
-
-                child.TypeF = parent.TypeF + 1;
-                if (child.TypeF == 1)
-                {
-                    child.EmailF0 = presenter;
-                }
-                else
-                {
-                    child.EmailF0 = parent.EmailF0;
-                }
+                child.ParentId = userIdSelected;
                 _context.SaveChanges();
             }
             return true;
@@ -269,12 +262,14 @@ namespace Gunny.APIs
         {
             var result = _context.MemAccounts.Select(x => new
             {
+                x.ParentId,
+                x.UserId,
                 x.Email,
                 x.Fullname,
                x.Avatar,
                x.Nickname,
                 Count = _context.MemAccounts.Where(m => m.Presenter == x.Email).Count(),
-            }).OrderByDescending( x=>x.Count).Skip((1 - 1) * 8).Take(8).ToList();
+            }).OrderByDescending( x=>x.Count).Skip((1 - 1) * 10).Take(10).ToList();
             return result;
         }
 
@@ -287,7 +282,11 @@ namespace Gunny.APIs
                 x.Fullname,
                 x.Avatar,
                 x.Nickname,
-            }).OrderByDescending(x => x.Email).Skip((page - 1) * 30).Take(20).ToList();
+                x.TotalRoseF2toF7,
+                x.TotalRoseF1,
+                x.UserId,
+                Count = x.InverseParent.Count()
+            }).OrderByDescending(x => x.Count).Skip((page - 1) * 30).Take(20).ToList();
             return new
             {
                 Result = result,

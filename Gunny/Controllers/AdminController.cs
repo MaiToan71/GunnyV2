@@ -145,12 +145,12 @@ namespace Gunny.Controllers
 
                 if (username == null)
                 {
-                    ViewBag.MemAccount = (from l in _context.MemAccounts
+                    ViewBag.MemAccount = (from l in _context.MemAccounts.Where(m => m.IsBlock == false)
                                           select l).OrderByDescending(x => x.UserId).ToPagedList(pageNumber, pageSize);
                 }
                 else
                 {
-                    ViewBag.MemAccount = (from l in _context.MemAccounts
+                    ViewBag.MemAccount = (from l in _context.MemAccounts.Where(m => m.IsBlock == false)
                                           select l).Where(m => m.Email.Contains(username)).OrderByDescending(x => x.UserId).ToPagedList(pageNumber, pageSize);
                 }
                 return View();
@@ -215,7 +215,7 @@ namespace Gunny.Controllers
                 {
                     return Redirect("/admin/login");
                 }
-                _context.MemAccounts.Remove(user);
+               user.IsBlock= true;
                 _context.SaveChanges();
                 return Redirect("/admin/users");
             }

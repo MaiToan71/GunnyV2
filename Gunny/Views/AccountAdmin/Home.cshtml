@@ -1,0 +1,108 @@
+﻿@{
+    ViewData["Title"] = "Trang chủ";
+    Layout = "~/Views/Shared/_AccountAdmin.cshtml";
+}
+<style>
+    .account {
+        margin-bottom: 30px;
+    }
+</style>
+<div class="card card-xl-stretch mb-5 mb-xl-12 ">
+    <div class="card-body py-3 row ">
+
+        <div class="table-responsive">
+            <table class="table table-row-dashed align-middle gs-0 gy-3 my-0">
+                <thead>
+                    <tr class="fs-7 fw-bold text-gray-400 border-bottom-0">
+                        <th class="p-0 pb-3 min-w-10px text-start">Thứ hạng</th>
+                        <th class="p-0 pb-3 min-w-100px text-start">Đại lý</th>
+                        <th class="p-0 pb-3 min-w-100px text-start">Số hoa hồng F1</th>
+                        <th class="p-0 pb-3 w-155px text-start">Hoa hồng</th>
+                        <th class="p-0 pb-3 w-155px text-start">Đăng ký</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i = 1;
+                    }
+                    @foreach (var item in ViewBag.ListUsers)
+                {
+                    <tr>
+                            <td >
+                               <span style="font-size: 25px; font-weight: bold;">@i</span>
+                          
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="symbol symbol-50px me-3">
+                                        @if (@item.avatar != null)
+                                        {
+                                        <img src="/files/@item.avatar" alt="@item.nickname" class="">
+                                        }
+                                        @if (@item.avatar == null)
+                                        {
+                                        <img src="/imgs/user.png" alt="@item.nickname" class="">
+                                        }
+                                </div>
+
+                                <div class="d-flex justify-content-start flex-column">
+                                    <a href="#" class="text-gray-800 fw-bold text-hover-primary mb-1 fs-6">@item.nickname</a>
+                                     
+                                </div>
+                            </div>
+                        </td>
+
+                        <td >
+                                <span class="text-gray-600 fw-bold fs-6">@item.totalRoseF1</span>
+                        </td>
+
+                        <td >
+                                <span class="text-gray-600 fw-bold fs-6">@item.totalRoseF2toF7</span>
+                        </td>
+                        <td>
+                                <button class="btn btn-success btn-sm register-user add-to-cart btn-@item.userId" data-id="@item.userId" style="width:100px">Đăng ký</button>
+                        </td>
+
+                        </tr>
+                        i++;
+                    }
+                </tbody>
+            </table>
+            @if (ViewBag.Total > 0)
+            {
+                <div class='pagination justify-content-end'>
+                    @{
+                        int pageCount = 0;
+                        int totalCount = ViewBag.Pages.Count - 1;
+                    }
+                    <a title="first_page" href="@ViewBag.Url?page=1">Trang đầu</a>
+                    <a title="first_page" href="@ViewBag.Url?page=@ViewBag.prevNumber">«</a>
+                    @foreach (var page in ViewBag.Pages)
+                    {
+                        { pageCount++; totalCount--; }
+                        if (ViewBag.pageNumber > @pageCount - 2 && ViewBag.pageNumber < @pageCount + 2)
+                        {
+                            if (ViewBag.pageNumber == @pageCount)
+                            {
+                                <a class='current' title='Page ' href='@ViewBag.Url'>@pageCount</a>
+                            }
+                            if (ViewBag.pageNumber != @pageCount)
+                            {
+                                <a rel='nofollow' class='other-page' title='Page @pageCount' href='@ViewBag.Url?page=@pageCount'>@pageCount</a>
+                            }
+                        }
+                    }
+                    @if (ViewBag.nextNumber <= @ViewBag.Pages.Count)
+                    {
+                        <a title="first_page" href='@ViewBag.Url?page=@ViewBag.nextNumber'>»</a>
+                    }
+                    <a title='Last page' href='@ViewBag.Url?page=@ViewBag.Pages.Count'>Trang cuối</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="/js/site.js?v=@DateTime.Now.ToString("yyyyMMddhhmmss")"></script>
+}

@@ -1,10 +1,14 @@
 ﻿@model Gunny.Models.InformationMemAccount.User
 @{
-    ViewData["Title"] = "Thông tin cá nhân";
+    ViewData["Title"] = "Hồ sơ";
     Layout = "~/Views/Shared/_AccountAdmin.cshtml";
 }
 <style>
     .account {
+        margin-bottom: 30px;
+    }
+
+    .card-body.row > div {
         margin-bottom: 30px;
     }
 </style>
@@ -12,7 +16,6 @@
 
 <link href="/css/canhan.css" rel="stylesheet" type="text/css" />
 <div class="row">
-
     <div class="col-md-3">
         <h2>Người giới thiệu</h2>
         <div class="card card-xl-stretch mb-5 mb-xl-12 ">
@@ -91,58 +94,115 @@
 </div>
  
 <div class="row">
-    <div class="col-md-6">
-        <h2>Thông tin hồ sơ</h2>
-        <div class="card card-xl-stretch mb-5 mb-xl-12">
-            <div class="card-body py-3 row">
-                <div class="row account">
-                    <div class="col-md-6">Tên đăng nhập</div>
-                    <div class="col-md-6">@Model.Email</div>
-                </div>
-                <div class="row account">
-                    <div class="col-md-6">Biệt danh</div>
-                    <div class="col-md-6">@Model.Nickname</div>
-                </div>
-                <div class="row account">
-                    <div class="col-md-6">Họ và tên</div>
-                    <div class="col-md-6">@Model.Fullname</div>
-                </div>
-                <div class="row account">
-                    <div class="col-md-6">Số điện thoại</div>
-                    <div class="col-md-6">@Model.Phone</div>
-                </div>
-                <div class="row account">
-                    <div class="col-md-6">Email</div>
-                    <div class="col-md-6">@Model.Email</div>
-                </div>
-                <div class="row account">
-                    <div class="col-md-6">Avatar</div>
+    @using (Html.BeginForm("EditMemAccount", "AccountAdmin", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="col-md-12">
+            <div class="card card-xl-stretch mb-5 mb-xl-12">
+                <div class="card-body py-3 row">
+                    @if (@TempData["AlerMessageSuccess"] != null)
+                    {
+                        <div class="alert alert-success" role="alert" style="display: flex; justify-content: center; width: 100%; }">
+                            @TempData["AlerMessageSuccess"]
+                        </div>
+                    }
+                    @if (@TempData["AlerMessageError"] != null)
+                    {
+                        <div class="alert alert-danger" role="alert" style="display: flex; justify-content: center; width: 100%; }">
+                            @TempData["AlerMessageError"]
+                        </div>
+                    }
+                    <h1>Cập nhật thông tin hồ sơ</h1>
+                    <hr />
                     <div class="col-md-6">
-                        <img src="/files/@Model.AvatarName" height="50">
+                        <div class="row">
+                            <div class="col-md-4 gunny-text">
+                                Tên đăng nhập
+                            </div>
+                            <div class="col-md-8 ">
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control w-80" ,@placeholder="Tên đăng nhập" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-4 gunny-text">
+                                Biệt danh
+                            </div>
+                            <div class="col-md-8 ">
+                                @Html.TextBoxFor(m => m.Nickname, "", new { @class = "form-control w-80" ,@placeholder="Biệt danh"})
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-4 gunny-text">
+                                Họ và tên
+                            </div>
+                            <div class="col-md-8 ">
+                                @Html.TextBoxFor(m => m.Fullname, "", new { @class = "form-control w-80" ,@placeholder="Họ và tên"})
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-4 gunny-text">
+                                Email
+                            </div>
+                            <div class="col-md-8 ">
+                                @Html.TextBoxFor(m => m.MemEmail, "", new { @type = "email", @class = "form-control w-80" ,@placeholder="Email"})
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-4 gunny-text">
+                                Số điện thoại
+                            </div>
+                            <div class="col-md-8 ">
+                                @Html.TextBoxFor(m => m.Phone, "", new { @type = "number", @class = "form-control w-80" ,@placeholder="Số điện thoại"})
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-4 gunny-text">
+                                Avatar
+                            </div>
+                            <div class="col-md-8 ">
+                                @Html.TextBoxFor(m => m.AvatarLink, "", new { @type = "FILE", @id = "fileAvatar", @name = "file", @class = "form-control w-80" })
+                                @Html.TextBoxFor(m => m. AvatarName, "", new { @type = "text", @style = "display:none", @class = "form-control w-80" })
+                                <span style="color:black" id="file1-avatar"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 gunny-text">
+                            </div>
+                            <div class="col-md-8 ">
+                                <img src="/files/@Model.AvatarName" id="fileAvatar-img" style="width:100px" />
+                            </div>
+                        </div>
+                    </div>
+                    @if (@Model.IsValidate == 2)
+                    {
+                        <p style="color:blue; font-weight:bold">Tài khoản đã xác minh</p>
+                    }
+                    @if (@Model.IsValidate == 1)
+                    {
+                        <p style="color:#ffbc00; font-weight:bold">Tài khoản chờ xác minh</p>
+                    }
+                    @if (@Model.IsValidate == 0 || @Model.IsValidate == null)
+                    {
+                        <p style="color:red">Tài khoản chưa được xác minh</p>
+                    }
+                    <div class="d-flex justify-content-center " style="margin-top:10px; margin-bottom:10px">
+                        <button type="submit" class="btn btn-primary  ">Cập nhật</button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-6">
-        <h2>Thông tin ngân ngân hàng</h2>
-        <div class="card card-xl-stretch mb-5 mb-xl-12">
-            <div class="card-body py-3 row">
-                <div class="row account">
-                    <div class="col-md-6">Ngân hàng hưởng thụ</div>
-                    <div class="col-md-6">@Model.BankName</div>
-                </div>
-                <div class="row account">
-                    <div class="col-md-6">Số tài khoản ngân hàng</div>
-                    <div class="col-md-6">@Model.BankNumber</div>
-                </div>
-                <div class="row account">
-                    <div class="col-md-6">Họ và tên</div>
-                    <div class="col-md-6">@Model.BankUserName</div>
-                </div>
-            </div>
-        </div>
-    </div>
+    }
+   
 </div>
 
 

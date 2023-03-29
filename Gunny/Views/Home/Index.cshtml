@@ -1,31 +1,31 @@
 ﻿@{
     ViewData["Title"] = "Trang chủ";
 }
-<div class="row-content pos-top " >
-  <div class='block_banners banners_0 blocks_banner c-banner_showpc blocks0 block'>
+<div class="row-content pos-top ">
+    <div class='block_banners banners_0 blocks_banner c-banner_showpc blocks0 block'>
         <div id="block-16" class="block-banner-home-new block-banner block-banner-fullpage ">
             <div id="" class="banner-home-new owl-carousel owl-theme">
-                            <div class="item">
-                                <a title="Banner top" href="#">
-                                    <img src="/files/banner.jpg" class="img-responsive ">
-                                </a>
-                            </div>
+                <div class="item">
+                    <a title="Banner top" href="#">
+                        <img src="/files/banner.jpg" class="img-responsive ">
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </div>
 <div class="block_products products_2 blocks_products blocks2 block">
     <div id="block-22" class="block-products block-products-default" style="">
-        <div class="container">
+        <div class="container-fuild">
             <div class="block-heading">
                 <a href="" class="heading">Đại lý nổi bật</a>
             </div>
             <div class="block-content">
-                <div class="row pro-box-list box-home">
+                <div class="row pro-box-list box-home  list items product-items  ">
                     @foreach (var item in ViewBag.TopUsers)
                     {
-                    <div class="col-lg-3 col-md-4 col-sm-6 c-item col-xs-6 ">
-                        <a href="javasctipt:;" alt="@item.nickname" class="c-image">
+                        <div class="item product product-item ">
+                            <a href="javasctipt:;" alt="@item.nickname" class="c-image">
                                 @if (@item.avatar != null)
                                 {
                                     <img src="/files/@item.avatar" alt="@item.nickname" class="img-fluid img-thumbnail img-first  c-img_4137 lazy ">
@@ -37,16 +37,70 @@
                                     <img src="/imgs/user.png" alt="@item.nickname" class="img-fluid img-thumbnail  img-sec lazy">
                                 }
                             </a>
+                            <div class="price">
+                                <p class="c-price">
+                                    <span style="">100,000 VNĐ</span>
+                                    <br />
+                                    <span style="">@item.count đăng ký </span>
+
+                                </p>
+                                <div>
+                                    <div class="add-to-cart " data-username="@item.email">
+                                        <button class="btn btn-sm btn-success @item.email" data-username="@item.email">Đăng ký</button>
+                                    </div>
+                                    <div id="list-size-936" class="list-size">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <h3 class="c-name">
+                                <a href="javasctipt:;" title="@item.nickname" class="name">
+                                    @item.nickname
+                                </a>
+                            </h3>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="block_banners banners_3 blocks_banner blocks3 block products_2 ">
+    <div class="container-fuild">
+        <div id="block-23" class="block-border-top block-banner block-banner-list_4" style="float:none;">
+            <div class="block-heading">
+                <p class="heading">
+                    Danh sách tài khoản <span></span>
+                </p>
+            </div>
+            <!--end: .block-heading-->
+
+            <div class="row pro-box-list box-home  list items product-items  ">
+                @foreach (var item in ViewBag.ListUsers)
+                {
+                    <div class="item product product-item ">
+                        <a href="javasctipt:;" alt="@item.nickname" class="c-image">
+                            @if (@item.avatar != null)
+                            {
+                                <img src="/files/@item.avatar" alt="@item.nickname" class="img-fluid img-thumbnail img-first  c-img_4137 lazy ">
+                                <img src="/files/@item.avatar" alt="@item.nickname" class="img-fluid img-thumbnail img-sec lazy">
+                            }
+                            @if (@item.avatar == null)
+                            {
+                                <img src="/imgs/user.png" alt="@item.nickname" class="img-fluid img-thumbnail img-first  c-img_4137 lazy ">
+                                <img src="/imgs/user.png" alt="@item.nickname" class="img-fluid img-thumbnail  img-sec lazy">
+                            }
+                        </a>
                         <div class="price">
                             <p class="c-price">
                                 <span style="">100,000 VNĐ</span>
-                                <br/>
-                                    <span style="">@item.count đăng ký </span>
+                                <br />
+                                <span style="">@item.count đăng ký </span>
 
                             </p>
                             <div>
-                                    <div class="add-to-cart " data-username="@item.email">
-                                        <button class="btn btn-sm btn-success @item.email" data-username="@item.email">Đăng ký</button>
+                                <div class="add-to-cart " data-username="@item.email">
+                                    <button class="btn btn-sm btn-success @item.email" data-username="@item.email">Đăng ký</button>
                                 </div>
                                 <div id="list-size-936" class="list-size">
                                 </div>
@@ -54,44 +108,14 @@
 
                         </div>
                         <h3 class="c-name">
-                                <a href="javasctipt:;" title="@item.nickname" class="name">
-                                    @item.nickname
+                            <a href="javasctipt:;" title="@item.nickname" class="name">
+                                @item.nickname
                             </a>
                         </h3>
                     </div>
-                   }
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="block_banners banners_3 blocks_banner blocks3 block">
-    <div class="container">
-        <div id="block-23" class="block-border-top block-banner block-banner-list_4" style="float:none;">
-            <div class="block-heading">
-                <p class="heading">
-                   Danh sách tài khoản <span></span>
-                </p>
-            </div>
-            <!--end: .block-heading-->
-            <div class="row row-insta">
-                @foreach(var item in ViewBag.ListUsers){
-                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 col-item">
-                    <a href="" title="@item.name" target="_blank">
-                            @if (@item.avatar != null){
-                                <img src="/files/@item.avatar" alt="@item.name" class="img-responsive lazy img-fluid img-thumbnail" style="height:150px">
-                }
-                            @if (@item.avatar == null)
-                            {
-                                <img src="/imgs/user.png" alt="@item.name" class="img-responsive lazy img-fluid img-thumbnail" style="height:150px">
-                            }
-                            
-                            <p>@item.nickname</p>
-                    </a>
-
-                </div>
                 }
             </div>
+          
             @if (ViewBag.Total > 0)
             {
                 <div class='pagination justify-content-end'>

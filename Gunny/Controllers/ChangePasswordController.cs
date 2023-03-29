@@ -237,7 +237,7 @@ namespace Gunny.Controllers
             string cookieValueFromReq = Request.Cookies["gunny_userid"];
             if (cookieValueFromReq == null)
             {
-               
+
                 return Redirect("/dang-nhap");
             }
             else
@@ -249,24 +249,29 @@ namespace Gunny.Controllers
                     TempData["AlerMessageError"] = "Bạn đã thay đổi MK2 một lần, Vui lòng liên hệ Admin đổi lại lần tiếp";
                     return Redirect("/mat-khau-cap-2");
                 }
-                    if (changePassword.Password2 == null || changePassword.ConfirmPassword2 == null)
-                    {
-                        TempData["AlerMessageError"] = "Bạn phải nhập dữ liệu";
-                        return Redirect("/mat-khau-cap-2");
-                    }
-                    if (changePassword.Password2 != changePassword.ConfirmPassword2)
-                    {
-                        TempData["AlerMessageError"] = "Nhập lại mật khẩu cấp 2 chưa đúng";
-                        return Redirect("/mat-khau-cap-2");
-                    }
-                    string newPassword2 = GetMD5(changePassword.Password2);
-                    user.Password2 = newPassword2;
-                    user.IsValidatePassword2 = true;
-                    _context.SaveChanges();
-                    TempData["AlerMessageSuccess"] = "Bạn đã cập nhật thành công mật khẩu cấp 2";
+                string password2 = GetMD5(changePassword.Password2);
+                if(password2 != user.Password2)
+                {
+                    TempData["AlerMessageError"] = "Mật khẩu cấp 2 chưa đúng";
                     return Redirect("/mat-khau-cap-2");
-                
-               
+                }
+                if (changePassword.Password2 == null || changePassword.NewPassword == null)
+                {
+                    TempData["AlerMessageError"] = "Bạn phải nhập dữ liệu";
+                    return Redirect("/mat-khau-cap-2");
+                }
+                if (changePassword.NewPassword != changePassword.ConfirmPassword)
+                {
+                    TempData["AlerMessageError"] = "Nhập lại mật khẩu mới chưa đúng";
+                    return Redirect("/mat-khau-cap-2");
+                }
+
+                user.Password = GetMD5(changePassword.NewPassword);
+                _context.SaveChanges();
+                TempData["AlerMessageSuccess"] = "Bạn đã cập nhật thành công mật khẩu cấp 2";
+                return Redirect("/");
+
+
             }
         }
 

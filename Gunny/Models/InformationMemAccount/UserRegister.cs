@@ -12,5 +12,6 @@ namespace Gunny.Models.InformationMemAccount
         public string Password { get; set; }
         public string Password2 { get; set; }
         public string  ConfirmPassword { get; set; }
+        public string Nickname { get; set; }
     }
 }

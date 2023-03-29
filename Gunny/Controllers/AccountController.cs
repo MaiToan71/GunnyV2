@@ -145,9 +145,7 @@ namespace Gunny.Controllers
                         TempData["AlerMessageError"] = "Tài khoản đã tồn tại, hãy nhập tên khác";
                         return Redirect("/thong-tin-tai-khoan");
                     }
-                    if (memAccount.Email == null || memAccount.Fullname == null || memAccount.Phone == null ||
-                        memAccount.BankNumber == null || memAccount.BankName == null || memAccount.Cmndnumber == null ||
-                        memAccount.MemEmail == null || memAccount.Nickname == null || memAccount.CMNDName == null)
+                    if (memAccount.Cmndnumber == null || memAccount.CMNDName == null)
                     {
                         TempData["AlerMessageError"] = "Hãy điền đầy đủ thông tin";
                         return Redirect("/thong-tin-tai-khoan");
@@ -210,33 +208,6 @@ namespace Gunny.Controllers
                             }
                         }
                     }
-                    //FILE Avatar
-                    var avartar = memAccount.AvatarName;
-                    IFormFile fileAvatar = memAccount.AvatarLink;
-                    if (memAccount.AvatarName == null)
-                    {
-                        if (fileAvatar == null || fileAvatar.Length == 0)
-                        {
-                            TempData["AlerMessageError"] = "Đã có lỗi hệ thống! Chưa cập nhật ảnh avatar";
-                            return Redirect("/thong-tin-tai-khoan");
-                        }
-                    }
-                    if (fileAvatar != null)
-                    {
-                        if (fileAvatar.Length > 0)
-                        {
-                            var nameAvatar = CreateName(20);
-                            avartar = nameAvatar + fileAvatar.FileName;
-                            var path3 = Path.Combine(
-                                        Directory.GetCurrentDirectory(), "wwwroot/files",
-                                       avartar);
-
-                            using (var stream = new FileStream(path3, FileMode.Create))
-                            {
-                                await fileAvatar.CopyToAsync(stream);
-                            }
-                        }
-                    }
 
                     if (user == null)
                     {
@@ -244,20 +215,15 @@ namespace Gunny.Controllers
                     }
 
                     // user.Email = memAccount.Email;
-                    user.Fullname = memAccount.Fullname;
-                    user.Phone = memAccount.Phone;
-                    user.BankNumber = memAccount.BankNumber;
-                    user.BankName = memAccount.BankName;
-                    user.Cmndnumber = memAccount.Cmndnumber;
-                    user.BankUserName = memAccount.BankUserName;
-                    user.MemEmail = memAccount.MemEmail;
-                    user.IsValidate = 1;
+                    if(user.IsValidate < 2)
+                    {
+                        user.IsValidate = 1;
+
+                    }
                     user.Cmndpath1 = CmndpathName1;
                     user.Cmndpath2 = CmndpathName2;
-                    user.Avatar = avartar;
                     user.Cmndname = memAccount.CMNDName;
-                    user.Nickname = memAccount.Nickname;
-
+                    user.Cmndnumber = memAccount.Cmndnumber;
                     _context.SaveChanges();
                     TempData["AlerMessageSuccess"] = "Bạn đã cập nhật thông tin";
                     return Redirect("/thong-tin-tai-khoan");
@@ -267,6 +233,107 @@ namespace Gunny.Controllers
                 {
                     TempData["AlerMessageError"] = "Đã có lỗi hệ thống! Chưa cập nhật thông tin";
                     return Redirect("/thong-tin-tai-khoan");
+                }
+            }
+        }
+
+
+        [Route("lien-ket-ngan-hang")]
+        public IActionResult ConnectBank()
+        {
+            string cookieValueFromReq = Request.Cookies["gunny_userid"];
+            if (cookieValueFromReq == null)
+            {
+
+                return Redirect("/dang-nhap");
+            }
+            else
+            {
+                int userid = Int32.Parse(cookieValueFromReq);
+                var user = _context.MemAccounts.Find(userid);
+                if (user == null)
+                {
+                    return Redirect("/dang-nhap");
+                }
+                var memAccount = new Models.InformationMemAccount.User
+                {
+                    UserId = user.UserId,
+                    Email = user.Email,
+                    Fullname = user.Fullname,
+                    Phone = user.Phone,
+                    MemEmail = user.MemEmail,
+                    NameCmndpath1 = user.Cmndpath1,
+                    NameCmndpath2 = user.Cmndpath2,
+                    BankNumber = user.BankNumber,
+                    BankName = user.BankName,
+                    Cmndnumber = user.Cmndnumber,
+                    BankUserName = user.BankUserName,
+                    IsValidate = user.IsValidate,
+                    AvatarName = user.Avatar,
+                    Presenter = user.Presenter,
+                    Nickname = user.Nickname,
+                    TotalMoney = user.TotalMoney,
+                    CMNDName = user.Cmndname,
+
+                };
+                return View(memAccount);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditBankMemAccount(Models.InformationMemAccount.User memAccount)
+        {
+            string cookieValueFromReq = Request.Cookies["gunny_userid"];
+            if (cookieValueFromReq == null)
+            {
+
+                return Redirect("/dang-nhap");
+            }
+            else
+            {
+                try
+                {
+                    int userid = Int32.Parse(cookieValueFromReq);
+                    var user = _context.MemAccounts.Find(userid);
+
+                    var listUsers = _context.MemAccounts.Where(m => m.Email == memAccount.Email && m.Email != user.Email);
+                    if (listUsers.Count() > 0)
+                    {
+                        TempData["AlerMessageError"] = "Tài khoản đã tồn tại, hãy nhập tên khác";
+                        return Redirect("/lien-ket-ngan-hang");
+                    }
+                    if (memAccount.BankName == null || memAccount.BankNumber == null || memAccount.BankUserName == null)
+                    {
+                        TempData["AlerMessageError"] = "Hãy điền đầy đủ thông tin";
+                        return Redirect("/lien-ket-ngan-hang");
+                    }
+
+                 
+                 
+
+                    if (user == null)
+                    {
+                        return Redirect("/dang-nhap");
+                    }
+
+                    // user.Email = memAccount.Email;
+                    if (user.IsValidate < 2)
+                    {
+                        user.IsValidate = 1;
+
+                    }
+                    user.BankName = memAccount.BankName;
+                    user.BankUserName = memAccount.BankUserName;
+                    user.BankNumber = memAccount.BankNumber;
+                    _context.SaveChanges();
+                    TempData["AlerMessageSuccess"] = "Bạn đã cập nhật thông tin";
+                    return Redirect("/lien-ket-ngan-hang");
+
+                }
+                catch (Exception)
+                {
+                    TempData["AlerMessageError"] = "Đã có lỗi hệ thống! Chưa cập nhật thông tin";
+                    return Redirect("/lien-ket-ngan-hang");
                 }
             }
         }

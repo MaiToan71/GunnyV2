@@ -1,6 +1,6 @@
 ﻿@model Gunny.Models.InformationMemAccount.User
 @{
-    ViewData["Title"] = "Xác minh tài khoản";
+    ViewData["Title"] = "Liên kết ngân hàng";
     Layout = "~/Views/Shared/_AccountAdmin.cshtml";
 }
 <style>
@@ -10,7 +10,7 @@
 </style>
 
 <div class="row" style="margin-top:-30px;">
-    @using (Html.BeginForm("EditMemAccount", "Account", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+    @using (Html.BeginForm("EditBankMemAccount", "Account", FormMethod.Post, new { @enctype = "multipart/form-data" }))
     {
         @Html.AntiForgeryToken()
         <div class="col-md-12">
@@ -31,63 +31,36 @@
                     <div class="col-md-6">
                         <div class="row">
                             <div class="col-md-4 gunny-text">
-                                Số CMND
+                               Ngân hàng hưởng thụ
                             </div>
                             <div class="col-md-8 ">
-                                @Html.TextBoxFor(m => m.Cmndnumber, "", new { @type = "number", @class = "form-control w-80",@placeholder="Số cmnd" })
+                                @Html.TextBoxFor(m => m.BankName, "", new { @type = "text", @class = "form-control w-80",@placeholder="Ngân hàng thụ hưởng" })
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="row">
                             <div class="col-md-4 gunny-text">
-                                Họ tên CMND
+                               Tên tài khoản ngân hàng
                             </div>
                             <div class="col-md-8 ">
-                                @Html.TextBoxFor(m => m.CMNDName, "", new { @type = "text", @class = "form-control w-80",@placeholder=" Họ tên CMND" })
+                                @Html.TextBoxFor(m => m.BankUserName, "", new { @type = "text", @class = "form-control w-80",@placeholder="Ngân hàng thụ hưởng" })
+                                <p>@Model.Fullname</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="row">
                             <div class="col-md-4 gunny-text">
-                                Tải ảnh CMND (mặt trước)
+                                Số tài khoản
                             </div>
                             <div class="col-md-8 ">
-                                @Html.TextBoxFor(m => m. Cmndpath1, "", new { @type = "FILE", @id = "file1", @name = "file", @class = "form-control w-80" })
-                                @Html.TextBoxFor(m => m.NameCmndpath1, "", new { @type = "text", @style = "display:none", @class = "form-control w-80" })
-                                <span style="color:black" id="file1-name"></span>
-
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4 gunny-text">
-                            </div>
-                            <div class="col-md-8 ">
-                                <img src="/files/@Model.NameCmndpath1" id="file1-img" style="width:100px" />
+                                @Html.TextBoxFor(m => m.BankNumber, "", new { @type = "number", @class = "form-control w-80",@placeholder=" Số tài khoản ngân hàng" })
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-md-4 gunny-text">
-                                Tải ảnh CMND (mặt sau)
-                            </div>
-                            <div class="col-md-8 ">
-                                @Html.TextBoxFor(m => m.Cmndpath2, "", new { @type = "FILE", @id = "file2", @name = "file", @class = "form-control w-80" })
-                                <span style="color:black" id="file2-name"></span>
-                                @Html.TextBoxFor(m => m.NameCmndpath2, "", new { @type = "text", @style = "display:none", @class = "form-control w-80" })
-
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4 gunny-text">
-                            </div>
-                            <div class="col-md-8 ">
-                                <img src="/files/@Model.NameCmndpath2" id="file2-img" style="width:100px" />
-                            </div>
-                        </div>
-                    </div>
+                
+                  
                     @if (@Model.IsValidate == 2)
                     {
                         <p style="color:blue; font-weight:bold">Tài khoản đã xác minh</p>

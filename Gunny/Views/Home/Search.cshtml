@@ -7,25 +7,25 @@
                 </div>
 <div class="block_products products_2 blocks_products blocks2 block">
     <div id="block-22" class="block-products block-products-default" style="">
-        <div class="container">
+        <div class="container-fuild">
             <div class="block-heading">
                 <a href="" class="heading">Danh sách tìm kiếm</a>
             </div>
             <div class="block-content">
-                <div class="row pro-box-list box-home">
+                <div class="row pro-box-list box-home  list items product-items  ">
                     @foreach (var item in ViewBag.ListUsers)
                     {
-                        <div class="col-lg-3 col-md-4 col-sm-6 c-item col-xs-6 ">
-                            <a href="javasctipt:;" alt="@item.fullname" class="c-image">
+                        <div class="item product product-item ">
+                            <a href="javasctipt:;" alt="@item.nickname" class="c-image">
                                 @if (@item.avatar != null)
                                 {
-                                    <img src="/files/@item.avatar" alt="@item.fullname" class="img-fluid img-thumbnail img-first  c-img_4137 lazy ">
-                                    <img src="/files/@item.avatar" alt="@item.fullname" class="img-fluid img-thumbnail img-sec lazy">
+                                    <img src="/files/@item.avatar" alt="@item.nickname" class="img-fluid img-thumbnail img-first  c-img_4137 lazy ">
+                                    <img src="/files/@item.avatar" alt="@item.nickname" class="img-fluid img-thumbnail img-sec lazy">
                                 }
                                 @if (@item.avatar == null)
                                 {
-                                    <img src="/imgs/user.png" alt="@item.fullname" class="img-fluid img-thumbnail img-first  c-img_4137 lazy ">
-                                    <img src="/imgs/user.png" alt="@item.fullname" class="img-fluid img-thumbnail  img-sec lazy">
+                                    <img src="/imgs/user.png" alt="@item.nickname" class="img-fluid img-thumbnail img-first  c-img_4137 lazy ">
+                                    <img src="/imgs/user.png" alt="@item.nickname" class="img-fluid img-thumbnail  img-sec lazy">
                                 }
                             </a>
                             <div class="price">
@@ -37,7 +37,7 @@
                                 </p>
                                 <div>
                                     <div class="add-to-cart " data-username="@item.email">
-                                        <button class="btn btn-sm btn-success @item.email">Đăng ký</button>
+                                        <button class="btn btn-sm btn-success @item.email" data-username="@item.email">Đăng ký</button>
                                     </div>
                                     <div id="list-size-936" class="list-size">
                                     </div>
@@ -45,8 +45,8 @@
 
                             </div>
                             <h3 class="c-name">
-                                <a href="javasctipt:;" title="@item.fullname" class="name">
-                                    @item.fullname
+                                <a href="javasctipt:;" title="@item.nickname" class="name">
+                                    @item.nickname
                                 </a>
                             </h3>
                         </div>
